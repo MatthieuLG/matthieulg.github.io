@@ -41,7 +41,7 @@ Ingénieur Big Data & Intelligence Artificielle spécialisé dans l'analyse de d
 ### ⚽ Football
 
 | Projet | Stack |
-|---|---|---|
+|------|
 | Application d'Analyse Post-Match OPTA | Python · Streamlit · Opta · Pandas |
 | Modèle xG / xGOT & Shot Placement | Python · Streamlit · Opta · ML |
 | AFCON Analytics Dashboard | Tableau · Python · Football Data |
