@@ -1,0 +1,2533 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Matthieu Le Gall — Data & Analytics Sportives</title>
+  <link rel="shortcut icon" href="./assets/images/logo.ico" type="image/x-icon">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+
+  <style>
+  /* ════════════════════════════════════════
+     RESET + VARIABLES
+  ════════════════════════════════════════ */
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --lime:       #c8f135;
+    --lime-glow:  rgba(200,241,53,0.18);
+    --lime-soft:  rgba(200,241,53,0.08);
+    --lime-edge:  rgba(200,241,53,0.25);
+    --pitch:      #0b0d0b;
+    --s1:         #111311;
+    --s2:         #161816;
+    --s3:         #1c1f1c;
+    --s4:         #232623;
+    --border:     rgba(255,255,255,0.055);
+    --border-hi:  rgba(200,241,53,0.28);
+    --text:       #dfe8d8;
+    --muted:      #7a8c72;
+    --dim:        #404840;
+    --gold:       #d4a843;
+    --red:        #e84040;
+    --white:      #f0f5ea;
+    --sidebar-w:  310px;
+    --r:          14px;
+    --r-sm:       9px;
+  }
+
+
+
+
+
+  
+  /* ════════════════════════════════════════
+     APP SHELL — dual-panel fixed viewport
+     Both panels scroll independently + in sync
+  ════════════════════════════════════════ */
+  html, body { height: 100%; overflow: hidden; }
+
+  body {
+    background: var(--pitch);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14.5px;
+    line-height: 1.7;
+    overflow: hidden;
+    background-image:
+      linear-gradient(rgba(200,241,53,0.018) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(200,241,53,0.018) 1px, transparent 1px);
+    background-size: 52px 52px;
+  }
+
+  #root {
+    width: 100%;
+    max-width: 1200px;
+    height: 100vh;
+    overflow: hidden;
+    margin: 0 auto;
+    position: relative;
+    border-left:  1px solid rgba(255,255,255,0.04);
+    border-right: 1px solid rgba(255,255,255,0.04);
+    box-shadow: -40px 0 80px rgba(0,0,0,0.4), 40px 0 80px rgba(0,0,0,0.4);
+    background: var(--pitch);
+  }
+
+  .wrapper {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* ════════════════════════════════════════
+     SIDEBAR — scrolls in sync with main
+  ════════════════════════════════════════ */
+  .sidebar {
+    width: var(--sidebar-w);
+    flex-shrink: 0;
+    height: 100vh;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    border-right: 1px solid var(--border);
+    background: rgba(11,13,11,0.65);
+    backdrop-filter: blur(28px);
+    display: flex;
+    flex-direction: column;
+    /* pointer-events: none so mouse wheel on sidebar doesn't fight main panel */
+    pointer-events: none;
+    /* but we re-enable for hover effects on elements */
+  }
+  .sidebar::-webkit-scrollbar { display: none; }
+  /* Re-enable pointer events on all sidebar children */
+  .sidebar > * { pointer-events: auto; }
+
+  /* — AVATAR ZONE — */
+  .av-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 24px 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .av-wrap::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(200,241,53,0.07) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  /* Ghost watermark number */
+  .av-wrap::after {
+    content: 'MLG';
+    position: absolute; right: -6px; bottom: -18px;
+    font-family: 'Bebas Neue', sans-serif; font-size: 130px; line-height: 1;
+    color: rgba(200,241,53,0.04); pointer-events: none; user-select: none; z-index: 0;
+  }
+
+  .av-ring {
+    position: relative;
+    width: 96px; height: 96px;
+    margin-bottom: 14px;
+    z-index: 1;
+  }
+  /* Dual rotating arcs */
+  .av-ring::before {
+    content: '';
+    position: absolute; inset: -4px; border-radius: 50%;
+    border: 1.5px solid transparent;
+    border-top-color: var(--lime);
+    border-right-color: rgba(200,241,53,0.25);
+    animation: arcSpin 3s linear infinite;
+  }
+  .av-ring::after {
+    content: '';
+    position: absolute; inset: -8px; border-radius: 50%;
+    border: 1px solid transparent;
+    border-bottom-color: rgba(200,241,53,0.08);
+    animation: arcSpin 5.5s linear infinite reverse;
+  }
+  @keyframes arcSpin { to { transform: rotate(360deg); } }
+
+  .av-ring img {
+    position: relative; z-index: 1;
+    width: 96px; height: 96px;
+    border-radius: 50%; object-fit: cover;
+    border: 2.5px solid rgba(200,241,53,0.6);
+    box-shadow: 0 0 0 4px rgba(200,241,53,0.07), 0 0 28px rgba(200,241,53,0.1);
+    display: block;
+  }
+
+  .av-name {
+    font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800;
+    letter-spacing: -0.02em; color: var(--white); line-height: 1.1;
+    margin-bottom: 8px; position: relative; z-index: 1;
+  }
+  .av-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 12px; border-radius: 50px;
+    font-size: 10.5px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase;
+    color: var(--lime); background: var(--lime-soft); border: 1px solid var(--lime-edge);
+    margin-bottom: 6px; position: relative; z-index: 1;
+  }
+  .av-status {
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    font-size: 11.5px; color: var(--muted); position: relative; z-index: 1;
+  }
+
+  .dot-live {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--lime); animation: blink 2s ease-in-out infinite;
+  }
+  @keyframes blink {
+    0%,100% { opacity:1; box-shadow: 0 0 0 0 rgba(200,241,53,0.5); }
+    50% { opacity:.6; box-shadow: 0 0 0 5px rgba(200,241,53,0); }
+  }
+
+  /* — DIVIDER — */
+  .sdiv {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 0;
+    flex-shrink: 0;
+  }
+
+  /* — SIDEBAR SECTIONS — */
+  .sb-section { padding: 18px 24px; flex-shrink: 0; }
+
+  .sb-label {
+    font-size: 9.5px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--dim); font-weight: 700; margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .sb-label::before {
+    content: ''; width: 14px; height: 1.5px;
+    background: var(--lime); opacity: 0.45; flex-shrink: 0;
+  }
+
+  .contact-list { list-style: none; display: flex; flex-direction: column; gap: 3px; }
+  .ci {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 9px; border-radius: var(--r-sm); transition: background .2s; cursor: default;
+  }
+  .ci:hover { background: var(--s3); }
+  .ci-icon {
+    width: 30px; height: 30px; flex-shrink: 0; border-radius: 7px;
+    background: var(--s3); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center; font-size: 13px;
+  }
+  .ci-label { font-size: 9.5px; color: var(--dim); text-transform: uppercase; letter-spacing: .07em; line-height: 1.1; }
+  .ci-val   { font-size: 12.5px; color: var(--text); font-weight: 500; }
+  .ci-val a { color: inherit; text-decoration: none; }
+  .ci-val a:hover { color: var(--lime); }
+
+  .clubs-grid {
+    display: grid; grid-template-columns: repeat(3,1fr); gap: 7px;
+  }
+  .club-tile {
+    background: var(--s2); border: 1px solid var(--border); border-radius: 9px;
+    padding: 9px 4px; display: flex; flex-direction: column; align-items: center; gap: 5px;
+    transition: all .2s; cursor: default;
+  }
+  .club-tile:hover { border-color: var(--border-hi); background: var(--s3); transform: translateY(-2px); }
+  .club-tile img { width: 34px; height: 34px; object-fit: contain; filter: drop-shadow(0 2px 6px rgba(0,0,0,.5)); }
+  .club-tile span { font-size: 8.5px; color: var(--dim); text-align: center; line-height: 1.2; font-weight: 600; }
+
+  .social-row { display: flex; gap: 8px; }
+  .social-btn {
+    flex: 1; display: flex; align-items: center; justify-content: center; gap: 7px;
+    padding: 11px 14px; border-radius: var(--r-sm);
+    font-size: 12.5px; font-weight: 700; font-family: 'DM Sans', sans-serif;
+    text-decoration: none; transition: all .2s ease; cursor: pointer; border: none;
+  }
+  .social-btn.linkedin {
+    background: var(--lime-soft); color: var(--lime); border: 1px solid var(--lime-edge);
+    font-family: 'Syne', sans-serif; letter-spacing: .04em;
+  }
+  .social-btn.linkedin:hover {
+    background: var(--lime); color: var(--pitch); border-color: var(--lime);
+    transform: translateY(-2px); box-shadow: 0 6px 20px rgba(200,241,53,.2);
+  }
+  .award-mini {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 14px;
+    background: linear-gradient(135deg, rgba(212,168,67,.12), rgba(212,168,67,.04));
+    border: 1px solid rgba(212,168,67,.3); border-radius: 10px;
+  }
+  .award-mini-icon { font-size: 22px; flex-shrink: 0; }
+  .award-mini-text { font-size: 11.5px; color: var(--gold); font-weight: 600; line-height: 1.4; }
+  .award-mini-sub  { font-size: 10.5px; color: var(--muted); font-weight: 400; }
+
+  /* Sidebar entrance animation */
+  .av-wrap    { animation: sbSlide .55s cubic-bezier(.22,1,.36,1) both .04s; }
+  .sidebar > .sdiv:nth-of-type(1)       { animation: sbFade .4s ease both .10s; }
+  .sidebar > .sb-section:nth-of-type(1) { animation: sbSlide .5s cubic-bezier(.22,1,.36,1) both .12s; }
+  .sidebar > .sdiv:nth-of-type(2)       { animation: sbFade .4s ease both .18s; }
+  .sidebar > .sb-section:nth-of-type(2) { animation: sbSlide .5s cubic-bezier(.22,1,.36,1) both .20s; }
+  .sidebar > .sdiv:nth-of-type(3)       { animation: sbFade .4s ease both .26s; }
+  .sidebar > .sb-section:nth-of-type(3) { animation: sbSlide .5s cubic-bezier(.22,1,.36,1) both .28s; }
+  .sidebar > .sdiv:nth-of-type(4)       { animation: sbFade .4s ease both .34s; }
+  .sidebar > .sb-section:nth-of-type(4) { animation: sbSlide .5s cubic-bezier(.22,1,.36,1) both .36s; }
+  .sidebar > .sdiv:nth-of-type(5)       { animation: sbFade .4s ease both .40s; }
+  .sidebar > .sb-section:nth-of-type(5) { animation: sbSlide .5s cubic-bezier(.22,1,.36,1) both .42s; }
+
+  @keyframes sbSlide {
+    from { opacity:0; transform: translateX(-14px); }
+    to   { opacity:1; transform: translateX(0); }
+  }
+  @keyframes sbFade {
+    from { opacity:0; }
+    to   { opacity:1; }
+  }
+
+/* ════════════════════════════════════════
+     MAIN AREA
+  ════════════════════════════════════════ */
+
+
+  /* — NAVBAR — */
+  .navbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(11,13,11,0.88);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    height: 58px;
+    flex-shrink: 0;
+  }
+
+  .nav-btn {
+    background: none; border: none;
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13.5px; font-weight: 500;
+    padding: 7px 18px;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    letter-spacing: 0.01em;
+  }
+
+  .nav-btn::after {
+    content: '';
+    position: absolute;
+    bottom: 2px; left: 50%; transform: translateX(-50%);
+    width: 0; height: 2px;
+    background: var(--lime);
+    border-radius: 2px;
+    transition: width 0.3s ease;
+  }
+
+  .nav-btn:hover { color: var(--text); }
+  .nav-btn.active { color: var(--lime); font-weight: 600; }
+  .nav-btn.active::after { width: 20px; }
+
+  /* — PAGE BODY — */
+  .page-body {
+    flex: 1;
+    padding: 44px 44px 64px;
+  }
+
+  /* — PAGES — */
+  .page { display: none; }
+  .page.active {
+    display: block;
+    animation: pageIn 0.4s ease forwards;
+  }
+
+  @keyframes pageIn {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ════════════════════════════════════════
+     PAGE HEADER
+  ════════════════════════════════════════ */
+  .ph {
+    margin-bottom: 40px;
+    position: relative;
+  }
+
+  .ph-eyebrow {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--dim);
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .ph-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(52px, 6vw, 80px);
+    letter-spacing: 0.03em;
+    line-height: 0.9;
+    color: var(--white);
+  }
+
+  .ph-title em {
+    font-style: normal;
+    color: var(--lime);
+    -webkit-text-stroke: 0px;
+  }
+
+  .ph-title .outline {
+    font-style: normal;
+    -webkit-text-stroke: 1px rgba(200,241,53,0.5);
+    color: transparent;
+  }
+
+  .ph-line {
+    position: absolute;
+    bottom: -20px; left: 0;
+    height: 1px; width: 100%;
+    background: linear-gradient(90deg, var(--lime-edge), transparent 60%);
+  }
+
+  /* ════════════════════════════════════════
+     ABOUT PAGE
+  ════════════════════════════════════════ */
+
+  /* — BIO CARDS — */
+  .bio-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 44px;
+  }
+
+  .bio-card {
+    background: var(--s2);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+
+  .bio-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, var(--lime), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .bio-card:hover { border-color: var(--border-hi); }
+  .bio-card:hover::before { opacity: 1; }
+
+  .bio-card p { font-size: 13.5px; color: var(--muted); line-height: 1.8; text-align: justify; }
+  .bio-card strong { color: var(--text); font-weight: 600; }
+
+  /* — AWARD BANNER — */
+  .award-banner {
+    display: flex; align-items: center; gap: 20px;
+    padding: 20px 28px;
+    background: linear-gradient(135deg, rgba(212,168,67,0.1) 0%, rgba(212,168,67,0.03) 100%);
+    border: 1px solid rgba(212,168,67,0.35);
+    border-radius: var(--r);
+    margin-bottom: 44px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .award-banner::after {
+    content: '🏆';
+    position: absolute;
+    right: 24px; top: 50%; transform: translateY(-50%);
+    font-size: 60px;
+    opacity: 0.07;
+  }
+
+  .award-icon { font-size: 36px; }
+  .award-h    { font-family: 'Syne', sans-serif; font-size: 14.5px; font-weight: 800; color: var(--gold); margin-bottom: 3px; }
+  .award-sub  { font-size: 12.5px; color: var(--muted); }
+
+  /* — SECTION LABEL — */
+  .sec-label {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--lime); font-weight: 700;
+    margin-bottom: 20px;
+  }
+
+  .sec-label::after {
+    content: '';
+    flex: 1; height: 1px;
+    background: linear-gradient(90deg, var(--lime-edge), transparent);
+  }
+
+  /* — SERVICES GRID — */
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    margin-bottom: 44px;
+  }
+
+  .sv-card {
+    background: var(--s2);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 22px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    cursor: default;
+  }
+
+  .sv-card:hover {
+    border-color: var(--border-hi);
+    background: var(--s3);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.3), 0 0 0 1px var(--lime-edge);
+  }
+
+  .sv-num {
+    position: absolute; top: 14px; right: 18px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px; line-height: 1;
+    color: rgba(200,241,53,0.05);
+    transition: color 0.3s;
+    pointer-events: none;
+  }
+  .sv-card:hover .sv-num { color: rgba(200,241,53,0.09); }
+
+  .sv-icon { margin-bottom: 10px; }
+  .sv-icon img { width: 30px; height: 30px; object-fit: contain; }
+
+  .sv-card h4 { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; color: var(--white); margin-bottom: 7px; }
+  .sv-card p  { font-size: 12.5px; color: var(--muted); line-height: 1.65; text-align: justify; }
+
+  /* — TESTIMONIALS — */
+  .testi-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+
+  .testi-card {
+    background: var(--s2);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .testi-card::before {
+    content: '"';
+    position: absolute;
+    top: 10px; right: 16px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 56px;
+    color: rgba(200,241,53,0.06);
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .testi-card:hover {
+    border-color: var(--border-hi);
+    background: var(--s3);
+    transform: translateY(-2px);
+  }
+
+  .tc-head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .tc-head img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--border-hi); }
+  .tc-name { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; color: var(--white); }
+  .tc-club { font-size: 10.5px; color: var(--lime); font-weight: 600; margin-top: 1px; }
+
+  .tc-excerpt {
+    font-size: 12px; color: var(--muted); line-height: 1.65;
+    text-align: justify;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .tc-more {
+    display: inline-flex; align-items: center; gap: 3px;
+    margin-top: 10px; font-size: 11px; color: var(--lime);
+    font-weight: 700; letter-spacing: 0.04em;
+  }
+
+  /* ════════════════════════════════════════
+     RESUME PAGE
+  ════════════════════════════════════════ */
+  .tl { margin-bottom: 44px; }
+
+  .tl-head {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .tl-head-icon {
+    width: 38px; height: 38px;
+    background: var(--lime-soft);
+    border: 1px solid var(--lime-edge);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+  }
+
+  .tl-head h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px; font-weight: 800; color: var(--white);
+  }
+
+  .tl-items {
+    position: relative;
+    padding-left: 20px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+
+  .tl-items::before {
+    content: '';
+    position: absolute;
+    left: 6px; top: 10px; bottom: 10px;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--lime), rgba(200,241,53,0.05));
+  }
+
+  .tl-item {
+    position: relative;
+    background: var(--s2);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 18px 20px;
+    transition: all 0.25s ease;
+  }
+
+  .tl-item:hover { border-color: rgba(200,241,53,0.2); background: var(--s3); }
+
+  .tl-item::before {
+    content: '';
+    position: absolute;
+    left: -20px; top: 20px;
+    width: 11px; height: 11px;
+    border-radius: 50%;
+    background: var(--lime);
+    border: 2px solid var(--pitch);
+    box-shadow: 0 0 0 3px rgba(200,241,53,0.15);
+  }
+
+  .tl-top {
+    display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;
+    margin-bottom: 5px;
+  }
+
+  .tl-item h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 13.5px; font-weight: 700; color: var(--white); line-height: 1.3;
+  }
+
+  .tl-tag {
+    flex-shrink: 0;
+    font-size: 10px; padding: 2px 9px;
+    border-radius: 50px;
+    background: var(--lime-soft);
+    border: 1px solid var(--lime-edge);
+    color: var(--lime); font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .tl-date { font-size: 11.5px; color: var(--dim); margin-bottom: 8px; }
+  .tl-item p { font-size: 13px; color: var(--muted); line-height: 1.7; text-align: justify; }
+
+  /* gold variant */
+  .tl-item.gold {
+    background: linear-gradient(135deg, rgba(212,168,67,0.07), var(--s2));
+    border-color: rgba(212,168,67,0.25);
+  }
+  .tl-item.gold:hover { border-color: rgba(212,168,67,0.45); }
+  .tl-item.gold::before { background: var(--gold); box-shadow: 0 0 0 3px rgba(212,168,67,0.15); }
+
+  /* — SKILLS — */
+  .sk-group {
+    background: var(--s2);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 18px 20px;
+    margin-bottom: 10px;
+    transition: border-color 0.25s;
+  }
+  .sk-group:hover { border-color: rgba(200,241,53,0.15); }
+
+  .sk-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 12.5px; font-weight: 700; color: var(--white);
+    margin-bottom: 11px;
+    display: flex; align-items: center; gap: 7px;
+  }
+  .sk-name::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--lime); flex-shrink: 0; }
+
+  .pills { display: flex; flex-wrap: wrap; gap: 7px; }
+
+  .pill {
+    padding: 4px 12px;
+    background: var(--s3);
+    border: 1px solid var(--border);
+    border-radius: 50px;
+    font-size: 12px; color: var(--muted); font-weight: 500;
+    transition: all 0.2s;
+    cursor: default;
+  }
+  .pill:hover { background: var(--lime-soft); border-color: var(--border-hi); color: var(--lime); }
+
+  /* ════════════════════════════════════════
+     PORTFOLIO PAGE
+  ════════════════════════════════════════ */
+  .filter-row { display: flex; gap: 8px; margin-bottom: 28px; flex-wrap: wrap; }
+
+  .fbtn {
+    padding: 7px 18px;
+    background: var(--s2); border: 1px solid var(--border);
+    border-radius: 50px; font-size: 13px; color: var(--muted);
+    cursor: pointer; font-family: 'DM Sans', sans-serif; font-weight: 500;
+    transition: all 0.2s;
+  }
+  .fbtn:hover { border-color: var(--border-hi); color: var(--text); }
+  .fbtn.active { background: var(--lime); color: var(--pitch); border-color: var(--lime); font-weight: 700; }
+
+  .cs-block {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: 340px;
+    background: var(--s2);
+    border: 1px dashed rgba(200,241,53,0.18);
+    border-radius: var(--r);
+    gap: 14px; text-align: center; padding: 48px;
+    position: relative; overflow: hidden;
+  }
+
+  .cs-block::before {
+    content: '⚽';
+    position: absolute;
+    font-size: 200px;
+    opacity: 0.025;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  .cs-block h3 { font-family: 'Bebas Neue', sans-serif; font-size: 36px; letter-spacing: 0.05em; color: var(--white); }
+  .cs-block p  { font-size: 14px; color: var(--muted); max-width: 380px; line-height: 1.7; }
+
+  /* ════════════════════════════════════════
+     CONTACT PAGE
+  ════════════════════════════════════════ */
+  .ct-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+
+  .ct-card {
+    background: var(--s2); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 26px;
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .ct-card2 {
+    background: var(--s2); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 35px;
+    display: flex; flex-direction: column; gap: 14px;
+  }
+
+  .ct-card h3 { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 800; color: var(--white); }
+  .ct-card p  { font-size: 13px; color: var(--muted); line-height: 1.7; text-align: justify; }
+
+  .ct-link {
+    display: inline-flex; align-items: center; gap: 7px;
+    color: var(--lime); text-decoration: none;
+    font-weight: 600; font-size: 13px;
+    transition: opacity 0.2s;
+  }
+  .ct-link:hover { opacity: 0.8; }
+
+  .avail-chip {
+    display: flex; align-items: center; gap: 8px;
+    padding: 12px 16px;
+    background: rgba(200,241,53,0.07);
+    border: 1px solid var(--lime-edge);
+    border-radius: 10px;
+    font-size: 13px; color: var(--lime); font-weight: 700;
+  }
+
+  .form-wrap {
+    background: var(--s2); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 28px;
+  }
+
+  .form-wrap h3 { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 800; color: var(--white); margin-bottom: 22px; }
+
+  .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+
+  .ff { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
+  .ff label { font-size: 10.5px; letter-spacing: 0.09em; text-transform: uppercase; color: var(--dim); font-weight: 700; }
+
+  .ff input,
+  .ff textarea {
+    background: var(--s3); border: 1px solid var(--border);
+    border-radius: 9px; padding: 11px 14px;
+    color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px;
+    outline: none; transition: border-color 0.2s; resize: none;
+  }
+  .ff input:focus, .ff textarea:focus { border-color: var(--border-hi); }
+  .ff textarea { min-height: 110px; }
+
+  .send-btn {
+    width: 100%; padding: 13px;
+    background: var(--lime); color: var(--pitch);
+    border: none; border-radius: 9px;
+    font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 800;
+    cursor: pointer; transition: all 0.2s ease;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    letter-spacing: 0.04em;
+  }
+  .send-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(200,241,53,0.25); }
+  .send-btn:disabled { opacity: 0.35; cursor: default; transform: none; box-shadow: none; }
+
+  /* ════════════════════════════════════════
+     MODAL
+  ════════════════════════════════════════ */
+  .modal-bg {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(12px);
+    z-index: 200;
+    display: none; align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .modal-bg.open { display: flex; }
+
+  .modal-box {
+    background: var(--s2);
+    border: 1px solid var(--border-hi);
+    border-radius: 18px;
+    padding: 34px;
+    max-width: 520px; width: 100%;
+    position: relative;
+    animation: mIn 0.3s cubic-bezier(0.34,1.56,0.64,1) forwards;
+  }
+
+  @keyframes mIn {
+    from { opacity: 0; transform: scale(0.9) translateY(20px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  .modal-x {
+    position: absolute; top: 18px; right: 18px;
+    background: var(--s3); border: 1px solid var(--border);
+    border-radius: 50%; width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 16px; color: var(--muted);
+    transition: all 0.2s;
+  }
+  .modal-x:hover { background: var(--red); color: #fff; border-color: var(--red); }
+
+  .modal-hd { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+  .modal-hd img { width: 52px; height: 52px; border-radius: 50%; border: 2px solid var(--border-hi); }
+  .modal-pname { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 800; color: var(--white); }
+  .modal-pmeta { font-size: 11.5px; color: var(--lime); font-weight: 600; margin-top: 2px; }
+  .modal-body  { font-size: 13.5px; color: var(--muted); line-height: 1.8; text-align: justify; }
+
+  /* ════════════════════════════════════════
+     RESPONSIVE
+  ════════════════════════════════════════ */
+  @media (max-width: 1000px) {
+    .wrapper { grid-template-columns: 1fr; }
+    .sidebar {
+      position: static; height: auto;
+      border-right: none; border-bottom: 1px solid var(--border);
+      padding: 24px 20px;
+    }
+    .av-wrap { flex-direction: row; text-align: left; padding-bottom: 0; gap: 16px; }
+    .clubs-grid { grid-template-columns: repeat(5, 1fr); }
+    .page-body { padding: 28px 20px 48px; }
+    .bio-grid, .testi-grid { grid-template-columns: 1fr; }
+    .ct-grid { grid-template-columns: 1fr; }
+    .form-row-2 { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 640px) {
+    .services-grid { grid-template-columns: 1fr; }
+    .testi-grid { grid-template-columns: 1fr; }
+    .ph-title { font-size: 46px; }
+  }
+
+  /* ════════════════════════════════════════
+     SIDEBAR — PAGE LOAD STAGGER ANIMATION
+  ════════════════════════════════════════ */
+  .av-wrap {
+    animation: sbIn 0.5s ease both;
+    animation-delay: 0.05s;
+  }
+  .sdiv { animation: sbFade 0.4s ease both; }
+  .sb-reveal {
+    animation: sbIn 0.5s ease both;
+    opacity: 1;
+    transform: none;
+  }
+  .sb-reveal:nth-child(1)  { animation-delay: 0.1s; }
+  .sb-reveal:nth-child(2)  { animation-delay: 0.15s; }
+  .sb-reveal:nth-child(3)  { animation-delay: 0.2s; }
+  .sb-reveal:nth-child(4)  { animation-delay: 0.25s; }
+  .sb-reveal:nth-child(5)  { animation-delay: 0.3s; }
+  .sb-reveal:nth-child(6)  { animation-delay: 0.35s; }
+  .sb-reveal:nth-child(7)  { animation-delay: 0.4s; }
+  @keyframes sbIn {
+    from { opacity: 0; transform: translateX(-10px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes sbFade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  /* ════════════════════════════════════════
+     PORTFOLIO — PROJECT CARDS
+  ════════════════════════════════════════ */
+  .proj-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+  }
+  .proj-card {
+    background: var(--s2);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    overflow: hidden;
+    transition: all 0.35s ease;
+    display: flex;
+    flex-direction: column;
+  }
+  .proj-card:hover {
+    border-color: var(--border-hi);
+    transform: translateY(-4px);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.4), 0 0 0 1px var(--lime-edge);
+  }
+  .proj-card.hidden { display: none; }
+
+  .proj-img {
+    height: 150px;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .proj-img-1 { background: linear-gradient(135deg, #0d2d1a 0%, #1a5c38 50%, #0d2d1a 100%); }
+  .proj-img-2 { background: linear-gradient(135deg, #1a0d2d 0%, #3d1a5c 50%, #1a0d2d 100%); }
+  .proj-img-3 { background: linear-gradient(135deg, #0d1a2d 0%, #1a3d5c 50%, #0d1a2d 100%); }
+  .proj-img-4 { background: linear-gradient(135deg, #2d1a0d 0%, #5c3d1a 50%, #2d1a0d 100%); }
+  .proj-img-5 { background: linear-gradient(135deg, #1a2d0d 0%, #3d5c1a 50%, #1a2d0d 100%); }
+  .proj-img-6 { background: linear-gradient(135deg, #2d0d1a 0%, #5c1a3d 50%, #2d0d1a 100%); }
+
+  .proj-img::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(200,241,53,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(200,241,53,0.06) 1px, transparent 1px);
+    background-size: 28px 28px;
+    animation: bgShift 8s linear infinite;
+  }
+  @keyframes bgShift {
+    from { background-position: 0 0; }
+    to   { background-position: 28px 28px; }
+  }
+  .proj-number {
+    position: absolute;
+    bottom: 8px; left: 16px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 64px; line-height: 1;
+    color: rgba(200,241,53,0.12);
+    pointer-events: none; z-index: 1;
+  }
+  .proj-overlay {
+    position: absolute; inset: 0;
+    display: flex; align-items: flex-start; justify-content: flex-end;
+    padding: 12px; z-index: 2;
+  }
+  .proj-tag {
+    padding: 4px 11px;
+    background: rgba(11,13,11,0.75);
+    border: 1px solid var(--border-hi);
+    border-radius: 50px;
+    font-size: 10px; font-weight: 700;
+    color: var(--lime);
+    letter-spacing: 0.06em; text-transform: uppercase;
+    backdrop-filter: blur(8px);
+  }
+  .proj-body {
+    padding: 18px 20px 16px;
+    display: flex; flex-direction: column; gap: 9px; flex: 1;
+  }
+  .proj-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 14.5px; font-weight: 800;
+    color: var(--white); line-height: 1.25;
+  }
+  .proj-desc {
+    font-size: 12.5px; color: var(--muted);
+    line-height: 1.7; text-align: justify; flex: 1;
+  }
+  .proj-stack { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; }
+  .proj-foot {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+    margin-top: 4px;
+  }
+  .proj-club { font-size: 11px; color: var(--lime); font-weight: 700; }
+  .proj-year { font-size: 11px; color: var(--dim); font-weight: 600; }
+
+
+  /* ════════════════════════════════════════
+     PROJECT MODAL
+  ════════════════════════════════════════ */
+  .proj-modal-box {
+    max-width: 640px;
+    max-height: 88vh;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-hi) transparent;
+    padding: 36px 36px 32px;
+  }
+  .proj-modal-box::-webkit-scrollbar { width: 4px; }
+  .proj-modal-box::-webkit-scrollbar-thumb { background: var(--border-hi); border-radius: 2px; }
+
+  .pm-header { margin-bottom: 18px; }
+
+  .pm-tag-wrap {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .pm-year-badge {
+    font-size: 10px; font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    padding: 3px 9px;
+    background: var(--s3);
+    border: 1px solid var(--border);
+    border-radius: 50px;
+  }
+
+  .pm-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px; letter-spacing: 0.04em;
+    color: var(--white); line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .pm-club {
+    font-size: 12px; color: var(--lime);
+    font-weight: 700; letter-spacing: 0.04em;
+  }
+
+  .pm-desc {
+    font-size: 13.5px; color: var(--muted);
+    line-height: 1.8; text-align: justify;
+    padding: 16px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 20px;
+  }
+
+  .pm-steps-label,
+  .pm-stack-label {
+    font-size: 9.5px; font-weight: 700;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--lime); margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .pm-steps-label::after,
+  .pm-stack-label::after {
+    content: ''; flex: 1; height: 1px;
+    background: linear-gradient(90deg, var(--lime-edge), transparent);
+  }
+
+  .pm-steps {
+    display: flex; flex-direction: column; gap: 8px;
+    margin-bottom: 22px;
+  }
+
+  .pm-step {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 12px 14px;
+    background: var(--s3);
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    transition: border-color 0.2s;
+  }
+  .pm-step:hover { border-color: var(--border-hi); }
+
+  .pm-step-n {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px; color: var(--lime);
+    line-height: 1; flex-shrink: 0;
+    width: 28px;
+  }
+
+  .pm-step-txt {
+    font-size: 13px; color: var(--text);
+    line-height: 1.6; padding-top: 2px;
+  }
+
+  .pm-stack-label { margin-top: 20px; }
+
+  .pm-actions {
+    margin-top: 24px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+    display: flex; gap: 10px;
+  }
+
+  .pm-link-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 11px 22px;
+    background: var(--lime);
+    color: var(--pitch);
+    border: none; border-radius: var(--r-sm);
+    font-family: 'Syne', sans-serif;
+    font-size: 13px; font-weight: 800;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    letter-spacing: 0.04em;
+  }
+  .pm-link-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(200,241,53,0.28);
+  }
+
+  /* proj-card cursor */
+  .proj-card { cursor: pointer; }
+  .proj-card:hover .proj-title { color: var(--lime); transition: color 0.2s; }
+
+  /* ════════════════════════════════════════
+     NAVBAR PROGRESS BAR
+  ════════════════════════════════════════ */
+  .nav-progress-bar {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: transparent;
+    overflow: hidden;
+  }
+  .nav-progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--lime), rgba(200,241,53,0.4));
+    transition: width 0.1s linear;
+    border-radius: 2px;
+  }
+
+  /* ════════════════════════════════════════
+     SIDEBAR — PAGE LOAD STAGGER (replaces broken scroll reveal)
+  ════════════════════════════════════════ */
+  .av-wrap    { animation: sbIn 0.55s cubic-bezier(0.22,1,0.36,1) both; animation-delay: 0.05s; }
+  .sb-reveal  { animation: sbIn 0.55s cubic-bezier(0.22,1,0.36,1) both; }
+  .sdiv       { animation: sbFade 0.4s ease both; }
+
+  .sidebar > .av-wrap                { animation-delay: 0.05s; }
+  .sidebar > .sdiv:nth-of-type(1)    { animation-delay: 0.10s; }
+  .sidebar > .sb-section:nth-of-type(1) { animation-delay: 0.12s; }
+  .sidebar > .sdiv:nth-of-type(2)    { animation-delay: 0.18s; }
+  .sidebar > .sb-section:nth-of-type(2) { animation-delay: 0.20s; }
+  .sidebar > .sdiv:nth-of-type(3)    { animation-delay: 0.26s; }
+  .sidebar > .sb-section:nth-of-type(3) { animation-delay: 0.28s; }
+  .sidebar > .sdiv:nth-of-type(4)    { animation-delay: 0.34s; }
+  .sidebar > .sb-section:nth-of-type(4) { animation-delay: 0.36s; }
+  .sidebar > .sdiv:nth-of-type(5)    { animation-delay: 0.42s; }
+  .sidebar > .sb-section:nth-of-type(5) { animation-delay: 0.44s; }
+
+  @keyframes sbIn {
+    from { opacity: 0; transform: translateX(-14px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes sbFade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  /* ════════════════════════════════════════
+     ENHANCED PROJ CARD — hover reveal eye icon
+  ════════════════════════════════════════ */
+  .proj-card { position: relative; }
+  .proj-hover-cta {
+    position: absolute;
+    inset: 0;
+    background: rgba(11,13,11,0.0);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 10;
+    pointer-events: none;
+  }
+  .proj-hover-cta span {
+    padding: 9px 20px;
+    background: var(--lime);
+    color: var(--pitch);
+    border-radius: 50px;
+    font-family: 'Syne', sans-serif;
+    font-size: 12px; font-weight: 800;
+    letter-spacing: 0.06em;
+    transform: translateY(8px);
+    transition: transform 0.3s ease;
+  }
+  .proj-card:hover .proj-hover-cta {
+    opacity: 1;
+    background: rgba(11,13,11,0.4);
+  }
+  .proj-card:hover .proj-hover-cta span { transform: translateY(0); }
+
+  
+  /* ════════════════════════════════════════
+     MAIN PANEL — dedicated scroll container
+  ════════════════════════════════════════ */
+  .main {
+    flex: 1;
+    height: 100vh;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: var(--s4) transparent;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  .main::-webkit-scrollbar { width: 4px; }
+  .main::-webkit-scrollbar-thumb { background: var(--s4); border-radius: 2px; }
+
+  /* ────────────────────────────────────────
+     KPI STRIP — hero stats row on About page
+  ──────────────────────────────────────── */
+  .kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 36px;
+  }
+  .kpi-card {
+    background: var(--s2); border: 1px solid var(--border); border-radius: var(--r);
+    padding: 18px 16px; text-align: center; position: relative; overflow: hidden;
+    transition: all .3s; cursor: default;
+  }
+  .kpi-card:hover { border-color: var(--border-hi); transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,.35); }
+  .kpi-card::before {
+    content: ''; position: absolute; top:0; left:0; right:0; height:2px;
+    background: linear-gradient(90deg, var(--lime), transparent);
+    opacity:0; transition: opacity .3s;
+  }
+  .kpi-card:hover::before { opacity:1; }
+  .kpi-val {
+    font-family: 'Bebas Neue', sans-serif; font-size: 40px; line-height: 1;
+    color: var(--lime); letter-spacing: .02em; margin-bottom: 3px;
+  }
+  .kpi-lbl { font-size: 10.5px; color: var(--muted); font-weight: 500; }
+
+  /* ────────────────────────────────────────
+     SCROLL REVEAL — stagger fade-up
+  ──────────────────────────────────────── */
+  /* .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity .5s ease, transform .5s ease;
+  }
+  .reveal.visible { opacity:1; transform: translateY(0); } */
+
+  /* ────────────────────────────────────────
+     PROJ GRID — upgrade to 2-col with bigger images
+  ──────────────────────────────────────── */
+  .proj-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  /* ────────────────────────────────────────
+     PROJ CARD — stronger hover glow
+  ──────────────────────────────────────── */
+  .proj-card:hover {
+    border-color: var(--border-hi);
+    transform: translateY(-5px);
+    box-shadow: 0 20px 50px rgba(0,0,0,.45), 0 0 0 1px var(--lime-edge);
+  }
+
+  /* ────────────────────────────────────────
+     NAVBAR — progress bar fix for inner scroll
+  ──────────────────────────────────────── */
+  .nav-progress-bar {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+  }
+  .nav-progress-fill {
+    height: 100%; width: 0%;
+    background: linear-gradient(90deg, var(--lime), rgba(200,241,53,.3));
+    transition: width .08s linear; border-radius: 2px;
+  }
+
+  /* ────────────────────────────────────────
+     TESTI GRID — 2+3 layout: wider cards
+  ──────────────────────────────────────── */
+  .testi-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  /* ────────────────────────────────────────
+     FORM inputs — lime focus ring
+  ──────────────────────────────────────── */
+  .ff input:focus, .ff textarea:focus {
+    box-shadow: 0 0 0 3px rgba(200,241,53,.07);
+  }
+
+  /* ────────────────────────────────────────
+     PAGE — enter from right instead of bottom
+  ──────────────────────────────────────── */
+  @keyframes pageIn {
+    from { opacity:0; transform: translateX(12px); }
+    to   { opacity:1; transform: translateX(0); }
+  }
+
+  /* ════════════════════════════════════════
+     MOBILE HAMBURGER BUTTON
+  ════════════════════════════════════════ */
+  .mob-toggle {
+    display: none;
+    position: fixed;
+    bottom: 22px;
+    right: 22px;
+    z-index: 200;
+    width: 50px; height: 50px;
+    border-radius: 50%;
+    background: var(--lime);
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(200,241,53,0.4);
+    align-items: center; justify-content: center;
+    flex-direction: column; gap: 5px;
+    transition: all .2s;
+  }
+  .mob-toggle span {
+    display: block;
+    width: 20px; height: 2px;
+    background: var(--pitch);
+    border-radius: 2px;
+    transition: all .25s;
+  }
+  .mob-toggle.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+  .mob-toggle.open span:nth-child(2) { opacity: 0; }
+  .mob-toggle.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+  /* ════════════════════════════════════════
+     MOBILE OVERLAY (behind sidebar)
+  ════════════════════════════════════════ */
+  .mob-overlay {
+    display: block;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 149;
+    backdrop-filter: blur(2px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .3s;
+  }
+  .mob-overlay.visible { opacity: 1; pointer-events: auto; }
+
+  /* ════════════════════════════════════════
+     RESPONSIVE — MOBILE (≤ 768px)
+  ════════════════════════════════════════ */
+  @media (max-width: 768px) {
+    /* Reset du layout desktop "tout fixed" */
+    html, body {
+      height: auto !important;
+      overflow: auto !important;
+    }
+
+    #root {
+      max-width: 100%;
+      border: none;
+      box-shadow: none;
+      height: auto !important;
+      overflow: visible !important;
+      min-height: 100vh;
+    }
+
+    .wrapper {
+      display: block !important;
+      height: auto !important;
+      overflow: visible !important;
+    }
+
+    /* Main : scroll naturel de la page */
+    .main {
+      width: 100% !important;
+      height: auto !important;
+      overflow: visible !important;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Navbar sticky en haut */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 0 10px;
+      height: 52px;
+      gap: 0;
+      pointer-events: auto;
+    }
+    .nav-btn {
+      pointer-events: auto;
+      -webkit-tap-highlight-color: rgba(200,241,53,0.2);
+      touch-action: manipulation;
+    }
+    .nav-btn {
+      font-size: 11.5px;
+      padding: 6px 9px;
+    }
+
+    /* Page body */
+    .page-body {
+      padding: 24px 16px 100px;
+      flex: 1;
+    }
+
+    /* Sidebar : drawer depuis la gauche */
+    .sidebar {
+      position: fixed !important;
+      top: 0; left: 0;
+      width: min(290px, 85vw);
+      height: 100vh;
+      z-index: 150;
+      transform: translateX(-100%);
+      transition: transform .3s cubic-bezier(.22,1,.36,1);
+      pointer-events: none;
+      border-right: 1px solid var(--lime-edge);
+      box-shadow: 4px 0 40px rgba(0,0,0,0.6);
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch;
+    }
+    .sidebar.mob-open {
+      pointer-events: auto;
+    }
+    .sidebar.mob-open {
+      transform: translateX(0);
+    }
+    .sidebar > * { pointer-events: auto; }
+
+    /* Grilles en 1 colonne */
+    .bio-grid,
+    .services-grid,
+    .proj-grid { grid-template-columns: 1fr; }
+
+    /* KPI 2 colonnes */
+    .kpi-strip { grid-template-columns: repeat(2, 1fr); }
+
+    /* Témoignages 1 colonne */
+    .testi-grid { grid-template-columns: 1fr !important; }
+
+    /* Contact cards */
+    .ct-grid { grid-template-columns: 1fr !important; }
+
+    /* Titre */
+    .ph-title { font-size: clamp(36px, 9vw, 58px); }
+
+    /* Form */
+    .form-row-2 { grid-template-columns: 1fr; }
+
+    /* Bouton hamburger */
+    .mob-toggle { display: flex; }
+
+    /* Overlay */
+    .mob-overlay { display: block; }
+  }
+
+  @media (max-width: 480px) {
+    .nav-btn { font-size: 11px; padding: 5px 8px; }
+    .kpi-strip { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .kpi-val { font-size: 30px; }
+    .clubs-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  /* Touch devices — prevent delay on tap */
+  .nav-btn, .proj-card, [data-modal-trigger], .fbtn, .modal-x, .mob-toggle, .send-btn, .pm-link-btn, .social-btn {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    cursor: pointer;
+  }
+
+</style>
+</head>
+<body>
+
+<div id="root">
+
+<!-- Mobile overlay -->
+<div class="mob-overlay" id="mobOverlay"></div>
+
+<!-- Mobile hamburger -->
+<button class="mob-toggle" id="mobToggle" aria-label="Menu">
+  <span></span>
+  <span></span>
+  <span></span>
+</button>
+
+<div class="wrapper">
+
+  <!-- ════════════════ SIDEBAR ════════════════ -->
+  <aside class="sidebar">
+
+    <!-- Avatar -->
+    <div class="av-wrap">
+      <div class="av-ring">
+        <img src="./assets/images/my-avatar.png" alt="Matthieu Le Gall">
+      </div>
+      <div class="av-name">Matthieu<br>Le Gall</div>
+      <div class="av-badge">⚽ Data · Analytics Sportives</div>
+      <div class="av-status">
+        <div class="dot-live"></div>
+        <span>Pour tout échange, contactez-moi</span>
+      </div>
+    </div>
+
+    <div class="sdiv"></div>
+
+    <!-- Contact -->
+    <div class="sb-section sb-reveal">
+      <div class="sb-label">Contact</div>
+      <ul class="contact-list">
+        <li class="ci">
+          <div class="ci-icon">📧</div>
+          <div>
+            <div class="ci-label">E-mail</div>
+            <div class="ci-val"><a href="mailto:legallmatthieu@gmx.fr">legallmatthieu@gmx.fr</a></div>
+          </div>
+        </li>
+        <li class="ci">
+          <div class="ci-icon">📍</div>
+          <div>
+            <div class="ci-label">Localisation</div>
+            <div class="ci-val">France · Mobile</div>
+          </div>
+        </li>
+        <li class="ci">
+          <div class="ci-icon">🚗</div>
+          <div>
+            <div class="ci-label">Permis</div>
+            <div class="ci-val">Permis B – Véhiculé</div>
+          </div>
+        </li>
+        <li class="ci">
+          <div class="ci-icon">🗓</div>
+          <div>
+            <div class="ci-label">Naissance</div>
+            <div class="ci-val">11 Août 2001</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="sdiv"></div>
+
+    <!-- Clubs -->
+    <div class="sb-section sb-reveal">
+      <div class="sb-label">Expériences clubs</div>
+      <div class="clubs-grid">
+        <div class="club-tile">
+          <img src="./assets/images/e1.png" alt="Standard de Liège">
+          <span>Standard de Liège</span>
+        </div>
+        <div class="club-tile">
+          <img src="./assets/images/e2.png" alt="Parma Calcio">
+          <span>Parma Calcio</span>
+        </div>
+        <div class="club-tile">
+          <img src="./assets/images/e3.png" alt="Vannes OC">
+          <span>Vannes OC</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sdiv"></div>
+
+    <!-- Entreprises -->
+    <div class="sb-section sb-reveal">
+      <div class="sb-label">Expériences entreprises</div>
+      <div class="clubs-grid">
+        <div class="club-tile">
+          <img src="./assets/images/e11.png" alt="Datatim" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
+          <div class="club-tile-fallback" style="display:none;width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,#1a3d5c,#2d6b9a);align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#c8f135;">DT</div>
+          <span>Datatim</span>
+        </div>
+        <div class="club-tile">
+          <img src="./assets/images/e12.png" alt="Ministère des Armées" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
+          <div class="club-tile-fallback" style="display:none;width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,#2d1a0d,#5c3420);align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#d4a843;">MA</div>
+          <span>Minist. Armées</span>
+        </div>
+        <div class="club-tile">
+          <img src="./assets/images/e13.png" alt="Union Sport & Cycle" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
+          <div class="club-tile-fallback" style="display:none;width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,#1a2d0d,#3a5c1a);align-items:center;justify-content:justify;font-size:11px;font-weight:800;color:#c8f135;">USC</div>
+          <span>Union Sport</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sdiv"></div>
+
+    <!-- Award mini -->
+    <div class="sb-section sb-reveal" style="padding-top:18px; padding-bottom:18px;">
+      <div class="award-mini">
+        <div class="award-mini-icon">🏆</div>
+        <div>
+          <div class="award-mini-text">Opta Forum Research 2024</div>
+          <div class="award-mini-sub">Lauréat · Event Data · Londres</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sdiv"></div>
+
+    <!-- Social -->
+    <div class="sb-section sb-reveal" style="padding-top:18px;">
+      <div class="social-row">
+        <a href="https://www.linkedin.com/in/matthieu-le-gall/" target="_blank" rel="noopener noreferrer" class="social-btn linkedin">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+          LinkedIn
+        </a>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- ════════════════ MAIN ════════════════ -->
+  <div class="main">
+
+    <!-- NAVBAR -->
+    <nav class="navbar"><div class="nav-progress-bar"><div class="nav-progress-fill" id="navProgress"></div></div>
+      <button class="nav-btn active" data-page="about">À Propos</button>
+      <button class="nav-btn" data-page="resume">Mon CV</button>
+      <button class="nav-btn" data-page="portfolio">Portfolio</button>
+      <button class="nav-btn" data-page="contact">Contact</button>
+    </nav>
+
+    <!-- PAGE BODY -->
+    <div class="page-body">
+
+      <!-- ══ ABOUT ══ -->
+      <article class="page active" data-page="about">
+
+        <div class="ph">
+          <div class="ph-eyebrow">Ingénieur Big Data & IA · Sports Analytics</div>
+          <div class="ph-title">A <em>Propos</em><span class="outline"> de moi</span></div>
+          <div class="ph-line"></div>
+        </div>
+
+        <div style="height:32px;"></div>
+
+        <div class="bio-grid reveal">
+          <div class="bio-card">
+            <p style="text-align: justify;">
+              <strong>Ingénieur Big Data & IA</strong> spécialisé dans le domaine sportif, je conçois des analyses et outils d'aide à la décision pour optimiser <strong>performance, préparation et recrutement</strong>.
+              Je transforme des données brutes en insights directement exploitables.
+            </p>
+          </div>
+          <div class="bio-card">
+              <p style="text-align: justify;">
+              Expériences terrain au <strong>Standard de Liège</strong> (BEL), <strong>Parma Calcio 1913</strong> (ITA) et <strong>Vannes OC</strong> (FRA).
+              De plus, fort de <strong> 3 ans en Data/IA au Ministère des Armées</strong>, j'adopte une approche rigoureuse et orientée impact réel.
+            </p>
+          </div>
+        </div>
+
+
+        <!-- KPI strip 
+        <div class="kpi-strip reveal">
+          <div class="kpi-card"><div class="kpi-val">5+</div><div class="kpi-lbl">Ans d'expérience</div></div>
+          <div class="kpi-card"><div class="kpi-val">3</div><div class="kpi-lbl">Clubs pro européens</div></div>
+          <div class="kpi-card"><div class="kpi-val">🏆</div><div class="kpi-lbl">Opta Forum 2024</div></div>
+          <div class="kpi-card"><div class="kpi-val">6</div><div class="kpi-lbl">Projets data sport</div></div>
+        </div>-->
+
+        <div class="sec-label">Ce que la data peut vous apporter</div>
+
+        <div class="services-grid reveal">
+          <div class="sv-card">
+            <div class="sv-num">01</div>
+            <div class="sv-icon"><img src="./assets/images/c1.svg" alt=""></div>
+            <h4>Collecte & Structuration</h4>
+            <p>Systèmes pour récupérer, nettoyer et organiser les données de performance, physiques et événementielles.</p>
+          </div>
+          <div class="sv-card">
+            <div class="sv-num">02</div>
+            <div class="sv-icon"><img src="./assets/images/c2.svg" alt=""></div>
+            <h4>Analyse des Performances</h4>
+            <p>Identification des tendances, forces, faiblesses et leviers d'amélioration individuels et collectifs.</p>
+          </div>
+          <div class="sv-card">
+            <div class="sv-num">03</div>
+            <div class="sv-icon"><img src="./assets/images/c3.svg" alt=""></div>
+            <h4>Indicateurs Avancés</h4>
+            <p>Métriques, scores et modèles prédictifs pour mieux comprendre et anticiper les performances.</p>
+          </div>
+          <div class="sv-card">
+            <div class="sv-num">04</div>
+            <div class="sv-icon"><img src="./assets/images/c4.svg" alt=""></div>
+            <h4>Visualisation Percutante</h4>
+            <p>Dashboards lisibles et directement utiles pour joueurs, staff technique et direction sportive.</p>
+          </div>
+        </div>
+
+        <div class="sec-label" style="margin-top:44px;">Références professionnelles</div>
+
+        <div class="testi-grid reveal">
+          <div class="testi-card"
+            data-modal-trigger
+            data-name="Jérôme Bonnissel"
+            data-club="Standard de Liège — Jupiler Pro League · 2025-2026"
+            data-text="Au Standard de Liège, j'interviens en tant que Data Scientist / Data Analyst Scout dans le cadre de la structuration et de la mise en place des processus data dédiés au recrutement. Je contribue au développement d'outils d'analyse et d'aide à la décision permettant d'identifier des profils de joueurs pertinents et d'optimiser les stratégies de scouting.">
+            <div class="tc-head">
+              <img src="./assets/images/avatar.svg" alt="Jérôme Bonnissel">
+              <div>
+                <div class="tc-name">Jérôme Bonnissel</div>
+                <div class="tc-club">Standard de Liège · JPL</div>
+              </div>
+            </div>
+            <p class="tc-excerpt">Développement d’outils data pour identifier des profils de joueurs et optimiser les stratégies de scouting...</p>
+            <span class="tc-more">Lire plus →</span>
+          </div>
+
+          <div class="testi-card"
+            data-modal-trigger
+            data-name="Marc Wilmots"
+            data-club="Standard de Liège — Jupiler Pro League · 2025-2026"
+            data-text="Au Standard de Liège, j'interviens en tant que Data Scientist / Data Analyst Scout dans le cadre de la structuration et de la mise en place des processus data dédiés au recrutement. Je contribue au développement d'outils d'analyse et d'aide à la décision permettant d'identifier des profils de joueurs pertinents et d'optimiser les stratégies de scouting.">
+            <div class="tc-head">
+              <img src="./assets/images/avatar.svg" alt="Marc Wilmots">
+              <div>
+                <div class="tc-name">Marc Wilmots</div>
+                <div class="tc-club">Standard de Liège · JPL</div>
+              </div>
+            </div>
+            <p class="tc-excerpt">Développement d’outils data pour identifier des profils de joueurs et optimiser les stratégies de scouting...</p>
+            <span class="tc-more">Lire plus →</span>
+          </div>
+
+          <div class="testi-card"
+            data-modal-trigger
+            data-name="Sébastien Coustou"
+            data-club="Parma Calcio 1913 — Serie B & A · 2022–2024"
+            data-text="J'ai travaillé sous la direction de Sébastien Coustou, Head of Data & Analytics, lors des saisons 2022-2023 et 2023-2024 (Serie B puis Serie A). J'y ai notamment contribué à un projet d'estimation de la valeur marchande des joueurs, mené des analyses statistiques ponctuelles et préparé des tables de données destinées aux projets de data visualisation. Cette expérience m'a permis d'évoluer dans un environnement professionnel exigeant, orienté performance et prise de décision.">
+            <div class="tc-head">
+              <img src="./assets/images/avatar.svg" alt="Sébastien Coustou">
+              <div>
+                <div class="tc-name">Sébastien Coustou</div>
+                <div class="tc-club">Parma Calcio · Head of Data</div>
+              </div>
+            </div>
+            <p class="tc-excerpt">Contribution à un projet d’estimation de la valeur marchande des joueurs, analyses statistiques et préparation de données pour la data visualisation au sein du département performance.</p>
+            <span class="tc-more">Lire plus →</span>
+          </div>
+
+          <div class="testi-card"
+            data-modal-trigger
+            data-name="Mathieu Lacome"
+            data-club="Parma Calcio 1913 - Chief of Performance"
+            data-text="J'ai travaillé sous la direction de Mathieu Lacome, Chief of Performance (actuellement Chief of Performance du Paris SG), au Parma Calcio 1913 lors des saisons 2022-2023 et 2023-2024. J'y ai contribué à un projet d'estimation de la valeur marchande des joueurs, mené des analyses statistiques et préparé des tables de données pour les projets de data visualisation. Une expérience dans un environnement professionnel exigeant, orienté performance et prise de décision.">
+            <div class="tc-head">
+              <img src="./assets/images/avatar.svg" alt="Mathieu Lacome">
+              <div>
+                <div class="tc-name">Mathieu Lacome</div>
+                <div class="tc-club">Parma Calcio</div>
+              </div>
+            </div>
+            <p class="tc-excerpt">Contribution à un projet d’estimation de la valeur marchande des joueurs, analyses statistiques et préparation de données pour la data visualisation au sein du département performance.</p>
+            <span class="tc-more">Lire plus →</span>
+          </div>
+
+          <div class="testi-card"
+            data-modal-trigger
+            data-name="Sullivan Coppalle"
+            data-club="Vannes Olympique Club — National 2 · 2022–2023"
+            data-text="J'ai collaboré avec Sullivan Coppalle lors de la saison 2022-2023 au Vannes Olympique Club (National 2), où il occupait les fonctions de préparateur physique et d'entraîneur adjoint. Dans le cadre de mon stage en data science, j'étais chargé de concevoir et transmettre chaque semaine un tableau de bord de suivi de la charge externe des joueurs, intégrant des objectifs individualisés afin d'optimiser la performance et la préparation physique. Ce travail a permis d'apporter des indicateurs clairs et directement exploitables par le staff.">
+            <div class="tc-head">
+              <img src="./assets/images/avatar.svg" alt="Sullivan Coppalle">
+              <div>
+                <div class="tc-name">Sullivan Coppalle</div>
+                <div class="tc-club">Vannes OC</div>
+              </div>
+            </div>
+            <p class="tc-excerpt">Dashboard GPS hebdomadaire de suivi de charge externe, objectifs individualisés, indicateurs visuels ...</p>
+            <span class="tc-more">Lire plus →</span>
+          </div>
+        </div>
+
+      </article>
+
+      <!-- ══ RESUME ══ -->
+      <article class="page" data-page="resume">
+
+        <div class="ph">
+          <div class="ph-eyebrow">Parcours · Compétences · Réalisations</div>
+          <div class="ph-title">Mon <em>CV</em></div>
+          <div class="ph-line"></div>
+        </div>
+
+        <div style="height:32px;"></div>
+
+        <div class="tl reveal">
+          <div class="tl-head">
+            <div class="tl-head-icon">💼</div>
+            <h3>Expériences professionnelles</h3>
+          </div>
+          <div class="tl-items">
+            <div class="tl-item">
+              <div class="tl-top">
+                <h4>Data Scientist & Data Analyst Scout — Standard de Liège</h4>
+                <span class="tl-tag">Actuel</span>
+              </div>
+              <div class="tl-date">📍 Septembre 2025 — Aujourd'hui · Liège, Belgique · Jupiler Pro League</div>
+              <p>Mise en place et structuration des processus data dédiés au scouting et à l'aide à la décision. Développement d'outils d'analyse, d'indicateurs et de méthodologies pour identifier des profils pertinents et optimiser les stratégies de recrutement.</p>
+            </div>
+            <div class="tl-item">
+              <div class="tl-top"><h4>Data Scientist — Datatim</h4></div>
+              <div class="tl-date">📍 2024 — 2025 · Rennes, France</div>
+              <p>Pilotage de la qualité et des flux de données, création de tableaux de bord adaptés aux besoins métiers et veille active sur les innovations en Data et IA.</p>
+            </div>
+            <div class="tl-item">
+              <div class="tl-top">
+          <h4>Apprenti Data Scientist — Ministère des Armées</h4>
+              </div>
+              <div class="tl-date">📍 2021 — 2024 · Bruz, France</div>
+              <p>Développement de démonstrateurs en Machine Learning, Deep Learning et NLP, dashboards interactifs, outils d'aide à la décision basés sur l'analyse de données complexes.</p>
+            </div>
+            <div class="tl-item">
+              <div class="tl-top"><h4>Stagiaire Data Scientist — Parma Calcio 1913</h4></div>
+              <div class="tl-date">📍 2023 · Parma, Italie · Serie A</div>
+              <p>Conception d'un modèle d'estimation de la valeur marchande des joueurs, analyses statistiques ponctuelles et préparation de tables pour les projets de data visualisation.</p>
+            </div>
+            <div class="tl-item">
+              <div class="tl-top"><h4>Bénévole Data Analyst — Vannes Olympique Club</h4></div>
+              <div class="tl-date">📍 2022 — 2023 · Vannes, France · National 2</div>
+              <p>Tableau de bord hebdomadaire de suivi de la charge externe GPS avec objectifs individualisés pour optimiser la préparation physique.</p>
+            </div>
+            <div class="tl-item">
+              <div class="tl-top"><h4>Apprenti Data Analyst — Union Sport & Cycle</h4></div>
+              <div class="tl-date">📍 2020 — 2021 · Paris, France</div>
+              <p>Tableaux de bord Power BI et analyse de données économiques pour les décisions stratégiques de la filière sport.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl reveal">
+          <div class="tl-head">
+            <div class="tl-head-icon">🎓</div>
+            <h3>Formation</h3>
+          </div>
+          <div class="tl-items">
+            <div class="tl-item">
+              <div class="tl-top"><h4>Diplôme d'Ingénieur — Big Data & Intelligence Artificielle</h4>
+                <span class="tl-tag">BAC +5</span>
+              </div>
+              <div class="tl-date">📍 2021 — 2024 · CNAM, Niort</div>
+              <p>Spécialisé en Data Science, Machine Learning, Big Data et IA avec applications en modélisation prédictive et visualisation.</p>
+            </div>
+            <div class="tl-item">
+              <div class="tl-top"><h4>DUT Statistique & Informatique Décisionnelle (STID)</h4>
+                              <span class="tl-tag">BAC +2</span>
+                </div>
+              <div class="tl-date">📍 2019 — 2021 · IUT Paris Descartes</div>
+              <p>Formation orientée analyse statistique, programmation, data visualisation et aide à la décision.</p>
+            </div>
+            <div class="tl-item">
+              <div class="tl-top"><h4>Baccalauréat Scientifique — Section Européenne Anglais</h4>
+              </div>
+              <div class="tl-date">📍 2016 — 2019 · Lycée Saint-Paul, Vannes</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl reveal">
+          <div class="tl-head">
+            <div class="tl-head-icon">🏆</div>
+            <h3>Distinctions & Réalisations</h3>
+          </div>
+          <div class="tl-items">
+            <div class="tl-item gold">
+              <div class="tl-top">
+                <h4>Lauréat — Opta Forum Research 2024 · Stats Perform</h4>
+                <span class="tl-tag" style="background:rgba(212,168,67,0.15);border-color:rgba(212,168,67,0.4);color:var(--gold);">🏆 Londres</span>
+              </div>
+              <div class="tl-date">📍 2024 · Opta Forum, Londres</div>
+              <p>
+              Lauréat dans la catégorie "Event Data" avec 
+              <strong style="color:var(--text)">
+              "Analyse de l'impact des touches dans le football moderne"
+              </strong>. 
+              Présentation des résultats sur scène à Londres. 
+              Vidéo disponible : 
+              <a href="https://www.statsperform.com/fr/2024-opta-forum-session-videos/" 
+                target="_blank" 
+                style="color:var(--gold);">
+              voir la présentation
+              </a>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="sec-label reveal">Expertise en Data</div>
+
+        <div class="sk-group">
+          <div class="sk-name">Gestion & Structuration des données</div>
+          <div class="pills">
+            <span class="pill">Web scraping</span><span class="pill">Bases de données</span><span class="pill">Requêtage SQL</span><span class="pill">Automatisation flux</span><span class="pill">API</span>
+          </div>
+        </div>
+        <div class="sk-group">
+          <div class="sk-name">Analyse & Modélisation</div>
+          <div class="pills">
+            <span class="pill">KPI avancés</span><span class="pill">Machine Learning</span><span class="pill">Deep Learning</span><span class="pill">Statistiques avancées</span><span class="pill">NLP</span>
+          </div>
+        </div>
+        <div class="sk-group">
+          <div class="sk-name">Visualisation & Aide à la décision</div>
+          <div class="pills">
+            <span class="pill">Power BI</span><span class="pill">Tableau</span><span class="pill">Streamlit</span>
+          </div>
+        </div>
+        <div class="sk-group">
+          <div class="sk-name">Langages & Outils techniques</div>
+          <div class="pills">
+            <span class="pill">Python</span><span class="pill">SQL</span><span class="pill">R</span><span class="pill">Power Query</span>
+          </div>
+        </div>
+        <div class="sk-group">
+          <div class="sk-name">Sources de données sportives</div>
+          <div class="pills">
+            <span class="pill">Opta Statsperform</span><span class="pill">StatsBomb</span><span class="pill">Wyscout</span><span class="pill">SkillCorner</span><span class="pill">GPS tracking</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- ══ PORTFOLIO ══ -->
+      <article class="page" data-page="portfolio">
+
+        <div class="ph">
+          <div class="ph-eyebrow">Projets · Analyses · Réalisations</div>
+          <div class="ph-title">Port<em>folio</em></div>
+          <div class="ph-line"></div>
+        </div>
+
+        <div style="height:32px;"></div>
+
+        <div class="filter-row">
+          <button class="fbtn active" data-filter="all">Tous</button>
+          <button class="fbtn" data-filter="football">Football</button>
+          <button class="fbtn" data-filter="padel">Padel</button>
+          <button class="fbtn" data-filter="bot">BOT</button>
+        </div>
+
+        <div class="proj-grid" id="projGrid">
+
+          <div class="proj-card reveal"
+              data-cat="football"
+              data-title="Application d’Analyse Post-Match OPTA"
+              data-tag="Football · Data Analytics"
+              data-club="Projet personnel"
+              data-year="2023"
+              data-desc="Développement d’une application Streamlit dédiée à l’analyse post-match de données événementielles OPTA. Le projet permet d’explorer et visualiser rapidement les principaux insights d’une rencontre à partir des événements de match, dans une logique d’aide à l’analyse de performance."
+              data-stack="Python,Streamlit,Opta,Pandas,Data Visualization"
+              data-link="https://www.linkedin.com/posts/matthieu-le-gall_dataanalytics-sportsanalytics-optadata-activity-7143564780174266368-nGUO"
+              data-step1="Structuration et préparation des données événementielles OPTA après match"
+              data-step2="Nettoyage, transformation et organisation des événements pour analyse"
+              data-step3="Développement d’une interface Streamlit interactive pour explorer les données"
+              data-step4="Création de visualisations et d’indicateurs pour faciliter la lecture de la performance"
+              data-step5="Présentation du projet via une démonstration vidéo publiée sur LinkedIn">
+
+            <div class="proj-img proj-img-1">
+              <div class="proj-hover-cta"><span>Voir le projet →</span></div>
+              <div class="proj-overlay"><span class="proj-tag">Football · Data Analytics</span></div>
+              <div class="proj-number">01</div>
+            </div>
+
+            <div class="proj-body">
+              <h3 class="proj-title">Application d’Analyse Post-Match OPTA</h3>
+              <p class="proj-desc">
+                Développement d’une application Streamlit dédiée à l’analyse post-match de données
+                événementielles OPTA. Le projet permet d’explorer et visualiser rapidement les principaux
+                insights d’une rencontre à partir des événements de match, dans une logique d’aide à
+                l’analyse de performance.
+              </p>
+
+              <div class="proj-stack">
+                <span class="pill">Python</span>
+                <span class="pill">Streamlit</span>
+                <span class="pill">Opta</span>
+                <span class="pill">Pandas</span>
+              </div>
+
+              <div class="proj-foot">
+                <span class="proj-club">Projet personnel</span>
+                <span class="proj-year">2023</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="proj-card reveal"
+              data-cat="football"
+              data-title="Modèle xG / xGOT & Shot Placement"
+              data-tag="Football · ML"
+              data-club="Projet personnel"
+              data-year="2024"
+              data-desc="Développement d’une application Streamlit d’analyse de tirs à partir de données événementielles Opta. Le projet combine des visualisations de shot placement et de préférences sur penalty avec deux modèles de machine learning dédiés au calcul du xG (Expected Goals) et du xGOT (Expected Goals on Target). Démonstration réalisée sur les données du joueur Himad Abdelli (SCO Angers)." 
+              data-stack="Python,Streamlit,Opta,Pandas,Machine Learning,Data Visualization"
+              data-link="https://www.linkedin.com/posts/matthieu-le-gall_streamlit-optaevent-scoangers-activity-7148389615584911360-1_5W"
+              data-step1="Préparation et structuration des données de tirs issues des événements Opta"
+              data-step2="Développement de visualisations pour analyser le placement des tirs et les préférences sur penalty"
+              data-step3="Conception de deux modèles de machine learning pour estimer le xG et le xGOT"
+              data-step4="Intégration des sorties modèles dans une interface Streamlit interactive"
+              data-step5="Présentation du cas d’usage sur Himad Abdelli (SCO Angers) via une démonstration vidéo">
+
+            <div class="proj-img proj-img-2">
+              <div class="proj-hover-cta"><span>Voir le projet →</span></div>
+              <div class="proj-overlay"><span class="proj-tag">Football · ML</span></div>
+              <div class="proj-number">02</div>
+            </div>
+
+            <div class="proj-body">
+              <h3 class="proj-title">Modèle xG / xGOT & Shot Placement</h3>
+              <p class="proj-desc">
+                Développement d’une application Streamlit d’analyse de tirs à partir de données
+                événementielles Opta. Le projet combine des visualisations de shot placement et de
+                préférences sur penalty avec deux modèles de machine learning dédiés au calcul du
+                xG (Expected Goals) et du xGOT (Expected Goals on Target).
+              </p>
+
+              <div class="proj-stack">
+                <span class="pill">Python</span>
+                <span class="pill">Streamlit</span>
+                <span class="pill">Opta</span>
+                <span class="pill">ML</span>
+              </div>
+
+              <div class="proj-foot">
+                <span class="proj-club">Projet personnel</span>
+                <span class="proj-year">2024</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="proj-card reveal"
+              data-cat="football"
+              data-title="AFCON Analytics Dashboard"
+              data-tag="Football · DataViz"
+              data-club="Projet personnel"
+              data-year="2024"
+              data-desc="Création d’un dashboard interactif dédié à la Coupe d’Afrique des Nations (AFCON) permettant d’explorer les données des sélections, joueurs et clubs représentés dans la compétition. Le projet inclut également un algorithme de prédiction du vainqueur basé sur l’ELO des nations et l’historique des résultats dans la compétition."
+              data-stack="Tableau,Python,Data Visualization,Football Data"
+              data-link="https://www.linkedin.com/posts/matthieu-le-gall_afcon-dashboard-activity-7151280568469450753-JyQ9"
+              data-step1="Collecte et structuration des données sur les sélections, joueurs et clubs participant à la CAN"
+              data-step2="Création d’un modèle de prédiction basé sur l’ELO des nations et les résultats historiques de la compétition"
+              data-step3="Développement d’un dashboard interactif sous Tableau pour explorer les données"
+              data-step4="Intégration de visualisations permettant d’analyser la composition des sélections et la répartition des joueurs par club"
+              data-step5="Publication du projet et du dashboard interactif en ligne pour partage et exploration">
+
+            <div class="proj-img proj-img-3">
+              <div class="proj-hover-cta"><span>Voir le projet →</span></div>
+              <div class="proj-overlay"><span class="proj-tag">Football · DataViz</span></div>
+              <div class="proj-number">03</div>
+            </div>
+
+            <div class="proj-body">
+              <h3 class="proj-title">AFCON Analytics Dashboard</h3>
+
+              <p class="proj-desc">
+                Création d’un dashboard interactif dédié à la Coupe d’Afrique des Nations
+                permettant d’explorer les données des sélections, joueurs et clubs participant
+                à la compétition. Le projet inclut également un algorithme de prédiction du
+                vainqueur basé sur l’ELO des nations et l’historique des résultats.
+              </p>
+
+              <div class="proj-stack">
+                <span class="pill">Tableau</span>
+                <span class="pill">Python</span>
+                <span class="pill">DataViz</span>
+                <span class="pill">Football Data</span>
+              </div>
+
+              <div class="proj-foot">
+                <span class="proj-club">Projet personnel</span>
+                <span class="proj-year">2024</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="proj-card reveal"
+              data-cat="football"
+              data-title="Analyse de l’Impact des Touches dans le Football Moderne"
+              data-tag="Football · Research"
+              data-club="Opta Forum 2024"
+              data-year="2024"
+              data-desc="Projet de recherche présenté lors de l’Opta Forum 2024 à Londres. L’étude analyse l’impact stratégique des touches dans le football moderne à partir de données événementielles Opta, afin d’identifier comment certaines équipes génèrent des séquences offensives et des occasions de but à partir de ces phases de jeu."
+              data-stack="Python,Opta Data,Pandas,Football Analytics,Data Visualization"
+              data-link="https://www.statsperform.com/resource/pro-research-presentations-announced-for-2024-opta-forum/"
+              data-step1="Extraction et préparation des événements Opta liés aux touches sur plusieurs matchs"
+              data-step2="Catégorisation des touches selon le contexte de jeu (attaque, défense, progression territoriale)"
+              data-step3="Analyse des séquences de passes initiées par une touche"
+              data-step4="Modélisation des probabilités de localisation des passes après une touche"
+              data-step5="Présentation des résultats lors de l’Opta Forum 2024 devant des professionnels de l’industrie">
+
+            <div class="proj-img proj-img-4">
+              <div class="proj-hover-cta"><span>Voir le projet →</span></div>
+              <div class="proj-overlay"><span class="proj-tag">Football · Research</span></div>
+              <div class="proj-number">04</div>
+            </div>
+
+            <div class="proj-body">
+              <h3 class="proj-title">Analyse de l’Impact des Touches dans le Football Moderne</h3>
+
+              <p class="proj-desc">
+                Projet de recherche présenté lors de l’Opta Forum 2024 à Londres. L’analyse
+                utilise les données événementielles Opta pour étudier comment les équipes
+                exploitent les touches afin de générer des séquences offensives et des
+                opportunités de tir dans différents contextes de match.
+              </p>
+
+              <div class="proj-stack">
+                <span class="pill">Python</span>
+                <span class="pill">Opta Data</span>
+                <span class="pill">Pandas</span>
+                <span class="pill">Football Analytics</span>
+              </div>
+
+              <div class="proj-foot">
+                <span class="proj-club">Opta Forum 2024 · London</span>
+                <span class="proj-year">2024</span>
+              </div>
+            </div>
+          </div>
+          <div class="proj-card reveal"
+              data-cat="football"
+              data-title="Championnat National Performance Dashboard"
+              data-tag="Football · DataViz"
+              data-club="Projet personnel"
+              data-year="2024"
+              data-desc="Développement d’un dashboard d’analyse du Championnat National basé sur les métriques avancées xG et xP (Expected Points). Le projet permet de comparer les performances réelles et attendues des équipes afin d’identifier les surperformances et sous-performances au cours de la saison."
+              data-stack="Python,Power BI,Power Query,Football Analytics,Data Visualization"
+              data-link="https://www.linkedin.com/posts/matthieu-le-gall_datasport-datafootball-python-activity-7279549462513913856-hCNx"
+              data-step1="Collecte des données de matchs et des statistiques avancées via FootyStats"
+              data-step2="Nettoyage et transformation des données avec Power Query"
+              data-step3="Calcul des métriques avancées : xG et Expected Points (xP) avec Python"
+              data-step4="Construction d’un dashboard interactif dans Power BI"
+              data-step5="Analyse des performances des équipes et identification des écarts entre résultats réels et attendus">
+
+            <div class="proj-img proj-img-5">
+              <div class="proj-hover-cta"><span>Voir le projet →</span></div>
+              <div class="proj-overlay"><span class="proj-tag">Football · DataViz</span></div>
+              <div class="proj-number">05</div>
+            </div>
+
+            <div class="proj-body">
+              <h3 class="proj-title">Championnat National Performance Dashboard</h3>
+
+              <p class="proj-desc">
+                Analyse des performances du Championnat National à travers les métriques
+                avancées xG et xP afin d’évaluer les équipes qui sur- ou sous-performent
+                par rapport aux attentes statistiques.
+              </p>
+
+              <div class="proj-stack">
+                <span class="pill">Python</span>
+                <span class="pill">Power BI</span>
+                <span class="pill">Power Query</span>
+                <span class="pill">Football Analytics</span>
+              </div>
+
+              <div class="proj-foot">
+                <span class="proj-club">Projet personnel</span>
+                <span class="proj-year">2024</span>
+              </div>
+            </div>
+          </div>
+          <div class="proj-card reveal"
+              data-cat="padel"
+              data-title="Padel Performance & Player Similarity Dashboard"
+              data-tag="Padel · DataViz"
+              data-club="Projet personnel"
+              data-year="2024"
+              data-desc="Création d’un dashboard Power BI pour analyser une saison personnelle de padel (21 tournois disputés). Le projet explore les performances individuelles, l’évolution du nombre de licenciés en France et inclut un algorithme de similarité permettant d’identifier les joueurs du club présentant un profil statistique proche."
+              data-stack="Power BI,Python,Data Visualization,Sports Analytics"
+              data-link="https://www.linkedin.com/posts/matthieu-le-gall_padel-dataviz-powerbi-activity-7313933958616920064-OltW"
+              data-step1="Collecte et structuration des données de tournois, classements et performances"
+              data-step2="Analyse de l’évolution du nombre de licenciés padel en France"
+              data-step3="Construction d’un dashboard Power BI pour suivre les performances sur 21 tournois"
+              data-step4="Développement d’un algorithme de similarité entre joueurs basé sur performances et classement"
+              data-step5="Identification des profils joueurs les plus proches au sein du club Breizh Padel">
+
+            <div class="proj-img proj-img-6">
+              <div class="proj-hover-cta"><span>Voir le projet →</span></div>
+              <div class="proj-overlay"><span class="proj-tag">Padel · DataViz</span></div>
+              <div class="proj-number">06</div>
+            </div>
+
+            <div class="proj-body">
+              <h3 class="proj-title">Padel Performance & Player Similarity Dashboard</h3>
+
+              <p class="proj-desc">
+                Dashboard Power BI analysant une saison personnelle de padel avec 21 tournois
+                disputés. L’outil combine analyse de performance, visualisation des résultats
+                et un modèle de similarité permettant d’identifier les profils joueurs les
+                plus proches au sein d’un club.
+              </p>
+
+              <div class="proj-stack">
+                <span class="pill">Power BI</span>
+                <span class="pill">Python</span>
+                <span class="pill">DataViz</span>
+                <span class="pill">Sports Analytics</span>
+              </div>
+
+              <div class="proj-foot">
+                <span class="proj-club">Projet personnel</span>
+                <span class="proj-year">2024</span>
+              </div>
+            </div>
+          </div>
+          <div class="proj-card reveal"
+              data-cat="bot"
+              data-title="Ticket Monitoring & Alert Bot"
+              data-tag="BOT · Web Scraping"
+              data-club="Projet personnel"
+              data-year="2024"
+              data-desc="Développement d’un bot de veille automatisée pour surveiller les billets remis en vente sur les plateformes de billetterie des Jeux Olympiques de Paris 2024 et de l’Olympique de Marseille. Le système scrape en continu les annonces disponibles, récupère les catégories, compétitions et tarifs, puis envoie des alertes Telegram dès qu’un billet correspondant à des critères définis devient disponible."
+              data-stack="Python,Web Scraping,Telegram Bot,Automation,Data Monitoring"
+              data-link=""
+              data-step1="Scraping automatisé des billets remis en vente sur les plateformes ciblées"
+              data-step2="Extraction des informations clés : événement, catégorie, prix et disponibilité"
+              data-step3="Filtrage des billets selon des critères personnalisés (compétition ou seuil de prix)"
+              data-step4="Déclenchement d’alertes en temps réel via un bot Telegram"
+              data-step5="Mise en place d’une veille continue pour détecter rapidement les opportunités intéressantes">
+
+            <div class="proj-img proj-img-6">
+              <div class="proj-hover-cta"><span>Voir le projet →</span></div>
+              <div class="proj-overlay"><span class="proj-tag">BOT</span></div>
+              <div class="proj-number">07</div>
+            </div>
+
+            <div class="proj-body">
+              <h3 class="proj-title">Ticket Monitoring & Alert Bot</h3>
+
+              <p class="proj-desc">
+                Bot de veille automatisée conçu pour surveiller les billets remis en vente
+                pour les JO de Paris 2024 et les matchs de l’OM. L’outil détecte les billets
+                intéressants selon le prix ou le type d’événement, puis envoie une alerte
+                Telegram en temps réel.
+              </p>
+
+              <div class="proj-stack">
+                <span class="pill">Python</span>
+                <span class="pill">Web Scraping</span>
+                <span class="pill">Telegram Bot</span>
+                <span class="pill">Automation</span>
+              </div>
+
+              <div class="proj-foot">
+                <span class="proj-club">Projet personnel</span>
+                <span class="proj-year">2024</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- ══ CONTACT ══ -->
+      <article class="page" data-page="contact">
+
+        <div class="ph">
+          <div class="ph-eyebrow">Collaboration · Opportunités · Échanges</div>
+          <div class="ph-title">Contactez<em>-moi</em></div>
+          <div class="ph-line"></div>
+        </div>
+
+        <div style="height:32px;"></div>
+
+        <div class="ct-grid reveal">
+        <div class="ct-card">
+          <h3>Discutons data & sport</h3>
+          <p>Ouvert à tout échange en analytics sportives, scouting data-driven ou performance analytics dans le sport.</p>
+          
+          <a href="mailto:legallmatthieu@gmx.fr" class="ct-link">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="4" width="20" height="16" rx="2"/>
+              <path d="m22 7-8.97 5.7a1.94 1.94 0 01-2.06 0L2 7"/>
+            </svg>
+            <span>legallmatthieu@gmx.fr</span>
+          </a>
+            <a href="https://www.linkedin.com/in/matthieu-le-gall/" target="_blank" rel="noopener noreferrer" class="ct-link">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+              LinkedIn · Matthieu Le Gall
+            </a>
+          </div>
+          <!-- COMMENTAIRE -->
+          <!-- <div class="ct-card">
+            <h3>Disponibilité</h3>
+            <div class="avail-chip">
+              <div class="dot-live"></div>
+              Disponible — Recherche active
+            </div>
+            <p>Basé en France, mobile pour des projets en clubs professionnels, fédérations ou startups sport-tech.</p>
+          </div> -->
+        </div>
+<!-- 
+        <div class="form-wrap reveal">
+          <h3>Formulaire de contact</h3>
+          <div class="form-row-2">
+            <div class="ff">
+              <label>Nom & Prénom</label>
+              <input type="text" id="fname" placeholder="Jean Dupont">
+            </div>
+            <div class="ff">
+              <label>E-mail</label>
+              <input type="email" id="femail" placeholder="jean@club.fr">
+            </div>
+          </div>
+          <div class="ff">
+            <label>Message</label>
+            <textarea id="fmsg" placeholder="Décrivez votre projet ou opportunité..."></textarea>
+          </div>
+          <button class="send-btn" id="sendBtn" disabled>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            ENVOYER
+          </button>
+        </div> -->
+      </article>
+      
+
+    </div><!-- /page-body -->
+  </div><!-- /main -->
+</div><!-- /wrapper -->
+</div><!-- /root -->
+
+
+<!-- ════ PROJECT MODAL ════ -->
+<div class="modal-bg" id="projModal">
+  <div class="modal-box proj-modal-box">
+    <button class="modal-x" id="projModalX">✕</button>
+
+    <div class="pm-header">
+      <div class="pm-tag-wrap">
+        <span class="proj-tag" id="pmTag"></span>
+        <span class="pm-year-badge" id="pmYear"></span>
+      </div>
+      <h2 class="pm-title" id="pmTitle"></h2>
+      <div class="pm-club" id="pmClub"></div>
+    </div>
+
+    <div class="pm-desc" id="pmDesc"></div>
+
+    <div class="pm-steps-label">Étapes du projet</div>
+    <div class="pm-steps" id="pmSteps"></div>
+
+    <div class="pm-stack-label">Stack technique</div>
+    <div class="pills" id="pmStack"></div>
+
+    <div class="pm-actions">
+      <a href="#" id="pmLink" class="pm-link-btn" target="_blank" rel="noopener noreferrer">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        Voir le projet
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- ════ MODAL (Témoignages) ════ -->
+<div class="modal-bg" id="modal">
+  <div class="modal-box">
+    <button class="modal-x" id="modalX">✕</button>
+    <div class="modal-hd">
+      <img src="./assets/images/avatar.svg" alt="" id="modalImg">
+      <div>
+        <div class="modal-pname" id="modalName"></div>
+        <div class="modal-pmeta" id="modalClub"></div>
+      </div>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+'use strict';
+
+// ══ DUAL-PANEL SCROLL SYNC ══
+const mainPanel = document.querySelector('.main');
+const sidebarEl = document.querySelector('.sidebar');
+
+function syncSidebar() {
+  if (!sidebarEl || !mainPanel) return;
+  const mainMax = mainPanel.scrollHeight - mainPanel.clientHeight;
+  if (mainMax <= 0) return;
+  const progress = mainPanel.scrollTop / mainMax;
+  const sbMax = sidebarEl.scrollHeight - sidebarEl.clientHeight;
+  if (sbMax <= 0) return;
+  sidebarEl.scrollTop = progress * sbMax;
+}
+mainPanel.addEventListener('scroll', syncSidebar, { passive: true });
+
+// ══ NAVBAR PROGRESS BAR ══
+const progressBar = document.getElementById('navProgress');
+mainPanel.addEventListener('scroll', () => {
+  const scrollable = mainPanel.scrollHeight - mainPanel.clientHeight;
+  const pct = scrollable > 0 ? (mainPanel.scrollTop / scrollable) * 100 : 0;
+  if (progressBar) progressBar.style.width = pct + '%';
+}, { passive: true });
+
+// ══ SCROLL REVEAL ══
+function checkReveals() {
+  const active = document.querySelector('.page.active');
+  if (!active) return;
+  active.querySelectorAll('.reveal:not(.visible)').forEach((el, i) => {
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight + 100) {
+      setTimeout(() => el.classList.add('visible'), i * 60);
+    }
+  });
+}
+mainPanel.addEventListener('scroll', checkReveals, { passive: true });
+window.addEventListener('scroll', checkReveals, { passive: true });
+
+// ══ NAVIGATION ══
+const pageEls = document.querySelectorAll('article[data-page]');
+const navBtns = document.querySelectorAll('.nav-btn');
+
+function go(target) {
+  pageEls.forEach(p => p.classList.toggle('active', p.dataset.page === target));
+  navBtns.forEach(b => b.classList.toggle('active', b.dataset.page === target));
+  if (window.innerWidth <= 768) {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  } else {
+    mainPanel.scrollTo({ top: 0, behavior: 'instant' });
+  }
+  if (progressBar) progressBar.style.width = '0%';
+  requestAnimationFrame(() => requestAnimationFrame(checkReveals));
+}
+navBtns.forEach(b => b.addEventListener('click', () => go(b.dataset.page)));
+
+// ══ FILTER PORTFOLIO ══
+document.querySelectorAll('.fbtn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    btn.closest('.filter-row').querySelectorAll('.fbtn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const cat = btn.dataset.filter || 'all';
+    document.querySelectorAll('.proj-card').forEach(card => {
+      card.classList.toggle('hidden', cat !== 'all' && card.dataset.cat !== cat);
+    });
+  });
+});
+
+// ══ PROJECT MODAL ══
+const projModal  = document.getElementById('projModal');
+const projModalX = document.getElementById('projModalX');
+
+function openProjModal(card) {
+  document.getElementById('pmTitle').textContent = card.dataset.title;
+  document.getElementById('pmTag').textContent   = card.dataset.tag;
+  document.getElementById('pmClub').textContent  = card.dataset.club;
+  document.getElementById('pmYear').textContent  = card.dataset.year;
+  document.getElementById('pmDesc').textContent  = card.dataset.desc;
+  const lnk = document.getElementById('pmLink');
+  lnk.href = card.dataset.link || '#';
+  lnk.style.display = card.dataset.link ? 'inline-flex' : 'none';
+  const stackEl = document.getElementById('pmStack');
+  stackEl.innerHTML = '';
+  (card.dataset.stack || '').split(',').forEach(s => {
+    const sp = document.createElement('span');
+    sp.className = 'pill';
+    sp.textContent = s.trim();
+    stackEl.appendChild(sp);
+  });
+  const stepsEl = document.getElementById('pmSteps');
+  stepsEl.innerHTML = '';
+  const steps = [];
+  for (let i = 1; i <= 6; i++) { const s = card.dataset['step'+i]; if (s) steps.push(s); }
+  steps.forEach((s, i) => {
+    const div = document.createElement('div');
+    div.className = 'pm-step';
+    div.innerHTML = '<div class="pm-step-n">' + String(i+1).padStart(2,'0') + '</div><div class="pm-step-txt">' + s + '</div>';
+    stepsEl.appendChild(div);
+  });
+  stepsEl.style.display = steps.length ? 'flex' : 'none';
+  projModal.classList.add('open');
+}
+document.querySelectorAll('.proj-card').forEach(c => c.addEventListener('click', () => openProjModal(c)));
+function closeProjModal() { projModal.classList.remove('open'); }
+projModalX.addEventListener('click', closeProjModal);
+projModal.addEventListener('click', e => { if (e.target === projModal) closeProjModal(); });
+
+// ══ TESTIMONIALS MODAL ══
+const modal     = document.getElementById('modal');
+const modalImg  = document.getElementById('modalImg');
+const modalName = document.getElementById('modalName');
+const modalClub = document.getElementById('modalClub');
+const modalBody = document.getElementById('modalBody');
+document.querySelectorAll('[data-modal-trigger]').forEach(card => {
+  card.addEventListener('click', () => {
+    modalImg.src          = card.dataset.img || './assets/images/avatar.svg';
+    modalName.textContent = card.dataset.name;
+    modalClub.textContent = card.dataset.club;
+    modalBody.textContent = card.dataset.text;
+    modal.classList.add('open');
+  });
+});
+document.getElementById('modalX').addEventListener('click', () => modal.classList.remove('open'));
+modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('open'); });
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    modal.classList.remove('open');
+    projModal.classList.remove('open');
+  }
+});
+
+// ══ FORM VALIDATION ══
+const fname   = document.getElementById('fname');
+const femail  = document.getElementById('femail');
+const fmsg    = document
+
+// ══ MOBILE SIDEBAR TOGGLE ══
+const mobToggle  = document.getElementById('mobToggle');
+const mobOverlay = document.getElementById('mobOverlay');
+const sidebarEl2 = document.querySelector('.sidebar');
+
+function openSidebar() {
+  sidebarEl2.classList.add('mob-open');
+  mobOverlay.classList.add('visible');
+  mobToggle.classList.add('open');
+  // body overflow reste intact pour ne pas bloquer le scroll du main
+}
+function closeSidebar() {
+  sidebarEl2.classList.remove('mob-open');
+  mobOverlay.classList.remove('visible');
+  mobToggle.classList.remove('open');
+}
+if (mobToggle) {
+  mobToggle.addEventListener('click', () => {
+    sidebarEl2.classList.contains('mob-open') ? closeSidebar() : openSidebar();
+  });
+}
+if (mobOverlay) {
+  mobOverlay.addEventListener('click', closeSidebar);
+}
+navBtns.forEach(b => b.addEventListener('click', () => {
+  if (window.innerWidth <= 768) closeSidebar();
+}));
+</script>
+</body>
+</html>
