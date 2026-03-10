@@ -71,4 +71,3 @@ Ce site présente :
 ---
 
 © 2026 – Matthieu Le Gall
-Inspiré de "https://github.com/codewithsadee"
