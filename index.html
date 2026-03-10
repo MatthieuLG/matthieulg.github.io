@@ -1330,15 +1330,16 @@
      MOBILE OVERLAY (behind sidebar)
   ════════════════════════════════════════ */
   .mob-overlay {
-    display: none;
+    display: block;
     position: fixed; inset: 0;
     background: rgba(0,0,0,0.6);
     z-index: 149;
     backdrop-filter: blur(2px);
     opacity: 0;
+    pointer-events: none;
     transition: opacity .3s;
   }
-  .mob-overlay.visible { opacity: 1; }
+  .mob-overlay.visible { opacity: 1; pointer-events: auto; }
 
   /* ════════════════════════════════════════
      RESPONSIVE — MOBILE (≤ 768px)
@@ -1382,6 +1383,12 @@
       padding: 0 10px;
       height: 52px;
       gap: 0;
+      pointer-events: auto;
+    }
+    .nav-btn {
+      pointer-events: auto;
+      -webkit-tap-highlight-color: rgba(200,241,53,0.2);
+      touch-action: manipulation;
     }
     .nav-btn {
       font-size: 11.5px;
@@ -1403,11 +1410,14 @@
       z-index: 150;
       transform: translateX(-100%);
       transition: transform .3s cubic-bezier(.22,1,.36,1);
-      pointer-events: auto;
+      pointer-events: none;
       border-right: 1px solid var(--lime-edge);
       box-shadow: 4px 0 40px rgba(0,0,0,0.6);
       overflow-y: auto !important;
       -webkit-overflow-scrolling: touch;
+    }
+    .sidebar.mob-open {
+      pointer-events: auto;
     }
     .sidebar.mob-open {
       transform: translateX(0);
@@ -1446,6 +1456,13 @@
     .kpi-strip { grid-template-columns: repeat(2, 1fr); gap: 8px; }
     .kpi-val { font-size: 30px; }
     .clubs-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  /* Touch devices — prevent delay on tap */
+  .nav-btn, .proj-card, [data-modal-trigger], .fbtn, .modal-x, .mob-toggle, .send-btn, .pm-link-btn, .social-btn {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    cursor: pointer;
   }
 
 </style>
