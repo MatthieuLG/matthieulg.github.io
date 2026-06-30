@@ -25,23 +25,23 @@
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
   :root {
-    --lime:       #c8f135;
-    --lime-glow:  rgba(200,241,53,0.18);
-    --lime-soft:  rgba(200,241,53,0.08);
-    --lime-edge:  rgba(200,241,53,0.25);
-    --pitch:      #0b0d0b;
-    --s1:         #111311;
-    --s2:         #161816;
-    --s3:         #1c1f1c;
-    --s4:         #232623;
-    --border:     rgba(255,255,255,0.055);
-    --border-hi:  rgba(200,241,53,0.28);
-    --text:       #dfe8d8;
-    --muted:      #7a8c72;
-    --dim:        #404840;
-    --gold:       #d4a843;
-    --red:        #e84040;
-    --white:      #f0f5ea;
+    --lime:       #C9A876;
+    --lime-glow:  rgba(201,168,118,0.16);
+    --lime-soft:  rgba(201,168,118,0.08);
+    --lime-edge:  rgba(201,168,118,0.24);
+    --pitch:      #15171c;
+    --s1:         #1a1d22;
+    --s2:         #20242a;
+    --s3:         #262a31;
+    --s4:         #2d3239;
+    --border:     rgba(255,255,255,0.06);
+    --border-hi:  rgba(201,168,118,0.26);
+    --text:       #e9e6df;
+    --muted:      #9a978f;
+    --dim:        #4a4944;
+    --gold:       #C9A876;
+    --red:        #d98a6a;
+    --white:      #f5f3ee;
     --sidebar-w:  310px;
     --r:          14px;
     --r-sm:       9px;
@@ -57,8 +57,8 @@
     line-height: 1.7;
     overflow: hidden;
     background-image:
-      linear-gradient(rgba(200,241,53,0.018) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(200,241,53,0.018) 1px, transparent 1px);
+      linear-gradient(rgba(201,168,118,0.018) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(201,168,118,0.018) 1px, transparent 1px);
     background-size: 52px 52px;
   }
 
@@ -111,14 +111,14 @@
   .av-wrap::before {
     content: '';
     position: absolute; inset: 0;
-    background: radial-gradient(ellipse at 50% 0%, rgba(200,241,53,0.07) 0%, transparent 65%);
+    background: radial-gradient(ellipse at 50% 0%, rgba(201,168,118,0.07) 0%, transparent 65%);
     pointer-events: none;
   }
   .av-wrap::after {
     content: 'MLG';
     position: absolute; right: -6px; bottom: -18px;
     font-family: 'Bebas Neue', sans-serif; font-size: 130px; line-height: 1;
-    color: rgba(200,241,53,0.04); pointer-events: none; user-select: none; z-index: 0;
+    color: rgba(201,168,118,0.04); pointer-events: none; user-select: none; z-index: 0;
   }
 
   .av-ring {
@@ -132,14 +132,14 @@
     position: absolute; inset: -4px; border-radius: 50%;
     border: 1.5px solid transparent;
     border-top-color: var(--lime);
-    border-right-color: rgba(200,241,53,0.25);
+    border-right-color: rgba(201,168,118,0.25);
     animation: arcSpin 3s linear infinite;
   }
   .av-ring::after {
     content: '';
     position: absolute; inset: -8px; border-radius: 50%;
     border: 1px solid transparent;
-    border-bottom-color: rgba(200,241,53,0.08);
+    border-bottom-color: rgba(201,168,118,0.08);
     animation: arcSpin 5.5s linear infinite reverse;
   }
   @keyframes arcSpin { to { transform: rotate(360deg); } }
@@ -148,8 +148,8 @@
     position: relative; z-index: 1;
     width: 96px; height: 96px;
     border-radius: 50%; object-fit: cover;
-    border: 2.5px solid rgba(200,241,53,0.6);
-    box-shadow: 0 0 0 4px rgba(200,241,53,0.07), 0 0 28px rgba(200,241,53,0.1);
+    border: 2.5px solid rgba(201,168,118,0.6);
+    box-shadow: 0 0 0 4px rgba(201,168,118,0.07), 0 0 28px rgba(201,168,118,0.1);
     display: block;
   }
 
@@ -175,8 +175,8 @@
     background: var(--lime); animation: blink 2s ease-in-out infinite;
   }
   @keyframes blink {
-    0%,100% { opacity:1; box-shadow: 0 0 0 0 rgba(200,241,53,0.5); }
-    50% { opacity:.6; box-shadow: 0 0 0 5px rgba(200,241,53,0); }
+    0%,100% { opacity:1; box-shadow: 0 0 0 0 rgba(201,168,118,0.5); }
+    50% { opacity:.6; box-shadow: 0 0 0 5px rgba(201,168,118,0); }
   }
 
   /* — CV DOWNLOAD BUTTONS — */
@@ -303,22 +303,23 @@
   }
   .club-tile:hover { border-color: var(--border-hi); background: var(--s3); transform: translateY(-2px); }
   .club-tile img { width: 34px; height: 34px; object-fit: contain; filter: drop-shadow(0 2px 6px rgba(0,0,0,.5)); }
-  .club-tile span { font-size: 8.5px; color: var(--dim); text-align: center; line-height: 1.2; font-weight: 600; }
+  .club-tile span { font-size: 8.5px; color: var(--text); text-align: center; line-height: 1.2; font-weight: 600; }
 
   .social-row { display: flex; gap: 8px; }
   .social-btn {
-    flex: 1; display: flex; align-items: center; justify-content: center; gap: 7px;
-    padding: 11px 14px; border-radius: var(--r-sm);
-    font-size: 12.5px; font-weight: 700; font-family: 'DM Sans', sans-serif;
+    flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
+    padding: 8px 12px; border-radius: var(--r-sm);
+    font-size: 11px; font-weight: 700; font-family: 'DM Sans', sans-serif;
     text-decoration: none; transition: all .2s ease; cursor: pointer; border: none;
   }
   .social-btn.linkedin {
     background: var(--lime-soft); color: var(--lime); border: 1px solid var(--lime-edge);
-    font-family: 'Syne', sans-serif; letter-spacing: .04em;
+    font-family: 'Syne', sans-serif; letter-spacing: .03em;
   }
+  .social-btn.linkedin svg { width: 11px; height: 11px; }
   .social-btn.linkedin:hover {
     background: var(--lime); color: var(--pitch); border-color: var(--lime);
-    transform: translateY(-2px); box-shadow: 0 6px 20px rgba(200,241,53,.2);
+    transform: translateY(-1px); box-shadow: 0 4px 14px rgba(201,168,118,.18);
   }
   .award-mini {
     display: flex; align-items: center; gap: 10px;
@@ -438,7 +439,7 @@
 
   .ph-title .outline {
     font-style: normal;
-    -webkit-text-stroke: 1px rgba(200,241,53,0.5);
+    -webkit-text-stroke: 1px rgba(201,168,118,0.5);
     color: transparent;
   }
 
@@ -546,11 +547,11 @@
     position: absolute; top: 14px; right: 18px;
     font-family: 'Bebas Neue', sans-serif;
     font-size: 52px; line-height: 1;
-    color: rgba(200,241,53,0.05);
+    color: rgba(201,168,118,0.05);
     transition: color 0.3s;
     pointer-events: none;
   }
-  .sv-card:hover .sv-num { color: rgba(200,241,53,0.09); }
+  .sv-card:hover .sv-num { color: rgba(201,168,118,0.09); }
 
   .sv-icon { margin-bottom: 10px; }
   .sv-icon img { width: 30px; height: 30px; object-fit: contain; }
@@ -580,7 +581,7 @@
     top: 10px; right: 16px;
     font-family: 'Bebas Neue', sans-serif;
     font-size: 56px;
-    color: rgba(200,241,53,0.06);
+    color: rgba(201,168,118,0.06);
     line-height: 1;
     pointer-events: none;
   }
@@ -643,7 +644,7 @@
     position: absolute;
     left: 6px; top: 10px; bottom: 10px;
     width: 1px;
-    background: linear-gradient(to bottom, var(--lime), rgba(200,241,53,0.05));
+    background: linear-gradient(to bottom, var(--lime), rgba(201,168,118,0.05));
   }
 
   .tl-item {
@@ -655,7 +656,7 @@
     transition: all 0.25s ease;
   }
 
-  .tl-item:hover { border-color: rgba(200,241,53,0.2); background: var(--s3); }
+  .tl-item:hover { border-color: rgba(201,168,118,0.2); background: var(--s3); }
 
   .tl-item::before {
     content: '';
@@ -665,7 +666,7 @@
     border-radius: 50%;
     background: var(--lime);
     border: 2px solid var(--pitch);
-    box-shadow: 0 0 0 3px rgba(200,241,53,0.15);
+    box-shadow: 0 0 0 3px rgba(201,168,118,0.15);
   }
 
   .tl-top {
@@ -688,7 +689,27 @@
     white-space: nowrap;
   }
 
-  .tl-date { font-size: 11.5px; color: var(--dim); margin-bottom: 8px; }
+  .tl-date { font-size: 11.5px; color: var(--dim); margin-bottom: 10px; }
+  .tl-date-soft { color: var(--text); font-weight: 500; }
+
+  .tl-badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+  .tl-badge {
+    font-size: 10.5px; font-weight: 600; padding: 3px 10px; border-radius: 50px;
+    background: var(--s4); border: 1px solid var(--border); color: var(--text);
+    white-space: nowrap;
+  }
+  .tl-badge.dark { background: var(--s1); border-color: rgba(255,255,255,0.1); }
+
+  .tl-bullets { list-style: none; display: flex; flex-direction: column; gap: 7px; margin-top: 4px; }
+  .tl-bullets li {
+    display: flex; gap: 8px; align-items: flex-start;
+    font-size: 12.5px; color: var(--muted); line-height: 1.6;
+  }
+  .tl-bullets li::before {
+    content: '↳'; color: var(--lime); font-size: 12px; flex-shrink: 0; margin-top: 1px;
+  }
+  .tl-bullets li strong { color: var(--text); font-weight: 600; }
+
   .tl-item p { font-size: 13px; color: var(--muted); line-height: 1.7; text-align: justify; }
 
   .tl-item.gold {
@@ -706,7 +727,7 @@
     margin-bottom: 10px;
     transition: border-color 0.25s;
   }
-  .sk-group:hover { border-color: rgba(200,241,53,0.15); }
+  .sk-group:hover { border-color: rgba(201,168,118,0.15); }
 
   .sk-name {
     font-family: 'Syne', sans-serif;
@@ -840,8 +861,8 @@
     content: '';
     position: absolute; inset: 0;
     background-image:
-      linear-gradient(rgba(200,241,53,0.06) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(200,241,53,0.06) 1px, transparent 1px);
+      linear-gradient(rgba(201,168,118,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(201,168,118,0.06) 1px, transparent 1px);
     background-size: 28px 28px;
     animation: bgShift 8s linear infinite;
   }
@@ -854,7 +875,7 @@
     bottom: 8px; left: 16px;
     font-family: 'Bebas Neue', sans-serif;
     font-size: 64px; line-height: 1;
-    color: rgba(200,241,53,0.12);
+    color: rgba(201,168,118,0.12);
     pointer-events: none; z-index: 1;
   }
   .proj-overlay {
@@ -990,14 +1011,14 @@
     font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 800;
     text-decoration: none; transition: all 0.2s ease; letter-spacing: 0.04em;
   }
-  .pm-link-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(200,241,53,0.28); }
+  .pm-link-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(201,168,118,0.28); }
 
   .nav-progress-bar {
     position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
   }
   .nav-progress-fill {
     height: 100%; width: 0%;
-    background: linear-gradient(90deg, var(--lime), rgba(200,241,53,.3));
+    background: linear-gradient(90deg, var(--lime), rgba(201,168,118,.3));
     transition: width .08s linear; border-radius: 2px;
   }
 
@@ -1064,7 +1085,7 @@
     position: fixed; bottom: 22px; right: 22px; z-index: 200;
     width: 50px; height: 50px; border-radius: 50%;
     background: var(--lime); border: none; cursor: pointer;
-    box-shadow: 0 4px 20px rgba(200,241,53,0.4);
+    box-shadow: 0 4px 20px rgba(201,168,118,0.4);
     align-items: center; justify-content: center;
     flex-direction: column; gap: 5px; transition: all .2s;
   }
@@ -1090,7 +1111,7 @@
     .wrapper { display: block !important; height: auto !important; overflow: visible !important; }
     .main { width: 100% !important; height: auto !important; overflow: visible !important; display: flex; flex-direction: column; }
     .navbar { position: sticky; top: 0; z-index: 100; padding: 0 10px; height: 52px; gap: 0; pointer-events: auto; }
-    .nav-btn { pointer-events: auto; -webkit-tap-highlight-color: rgba(200,241,53,0.2); touch-action: manipulation; font-size: 11.5px; padding: 6px 9px; }
+    .nav-btn { pointer-events: auto; -webkit-tap-highlight-color: rgba(201,168,118,0.2); touch-action: manipulation; font-size: 11.5px; padding: 6px 9px; }
     .page-body { padding: 24px 16px 100px; flex: 1; }
     .sidebar {
       position: fixed !important; top: 0; left: 0;
@@ -1140,7 +1161,7 @@
     position: fixed; top: 0; left: 0; z-index: 100000; pointer-events: none;
     width: 6px; height: 6px; border-radius: 50%; background: var(--lime);
     transform: translate(-50%,-50%);
-    box-shadow: 0 0 8px rgba(200,241,53,.8);
+    box-shadow: 0 0 8px rgba(201,168,118,.8);
   }
   #customCursor.clicking { transform: translate(-50%,-50%) scale(0.75) rotate(20deg); }
   .tw-cursor { display: inline-block; animation: twBlink .9s step-end infinite; opacity: .7; }
@@ -1192,7 +1213,7 @@
         <img src="./assets/images/my-avatar.png" alt="Matthieu Le Gall">
       </div>
       <div class="av-name">Matthieu<br>Le Gall</div>
-      <div class="av-badge">⚽ <span id="typewriterText">Data · Analytics Sportives</span><span class="tw-cursor">|</span></div>
+      <div class="av-badge"><span id="twEmoji">⚽</span> <span id="typewriterText">Data · Analytics Sportives</span><span class="tw-cursor">|</span></div>
       <div class="av-status">
         <div class="dot-live"></div>
         <span>Pour tout échange, contactez-moi</span>
@@ -1271,6 +1292,18 @@
 
     <div class="sdiv"></div>
 
+    <!-- Social -->
+    <div class="sb-section sb-reveal" style="padding-top:14px; padding-bottom:14px;">
+      <div class="social-row">
+        <a href="https://www.linkedin.com/in/matthieu-le-gall/" target="_blank" rel="noopener noreferrer" class="social-btn linkedin">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+          LinkedIn
+        </a>
+      </div>
+    </div>
+
+    <div class="sdiv"></div>
+
     <!-- Clubs -->
     <div class="sb-section sb-reveal">
       <div class="sb-label">Expériences clubs</div>
@@ -1298,7 +1331,7 @@
       <div class="clubs-grid">
         <div class="club-tile">
           <img src="./assets/images/e11.png" alt="Datatim" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-          <div class="club-tile-fallback" style="display:none;width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,#1a3d5c,#2d6b9a);align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#c8f135;">DT</div>
+          <div class="club-tile-fallback" style="display:none;width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,#1a3d5c,#2d6b9a);align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#C9A876;">DT</div>
           <span>Datatim</span>
         </div>
         <div class="club-tile">
@@ -1308,7 +1341,7 @@
         </div>
         <div class="club-tile">
           <img src="./assets/images/e13.png" alt="Union Sport & Cycle" onerror="this.style.display='none';this.nextSibling.style.display='flex'">
-          <div class="club-tile-fallback" style="display:none;width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,#1a2d0d,#3a5c1a);align-items:center;justify-content:justify;font-size:11px;font-weight:800;color:#c8f135;">USC</div>
+          <div class="club-tile-fallback" style="display:none;width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,#1a2d0d,#3a5c1a);align-items:center;justify-content:justify;font-size:11px;font-weight:800;color:#C9A876;">USC</div>
           <span>Union Sport</span>
         </div>
       </div>
@@ -1324,18 +1357,6 @@
           <div class="award-mini-text">Opta Forum Research 2024</div>
           <div class="award-mini-sub">Lauréat · Event Data · Londres</div>
         </div>
-      </div>
-    </div>
-
-    <div class="sdiv"></div>
-
-    <!-- Social -->
-    <div class="sb-section sb-reveal" style="padding-top:18px;">
-      <div class="social-row">
-        <a href="https://www.linkedin.com/in/matthieu-le-gall/" target="_blank" rel="noopener noreferrer" class="social-btn linkedin">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
-          LinkedIn
-        </a>
       </div>
     </div>
 
@@ -1465,33 +1486,83 @@
           <div class="tl-items">
             <div class="tl-item">
               <div class="tl-top"><h4>Data Scientist & Data Analyst Scout — Standard de Liège</h4><span class="tl-tag">Actuel</span></div>
-              <div class="tl-date">📍 Septembre 2025 — Aujourd'hui · Liège, Belgique · Jupiler Pro League</div>
-              <p>Mise en place et structuration des processus data dédiés au scouting et à l'aide à la décision. Développement d'outils d'analyse, d'indicateurs et de méthodologies pour identifier des profils pertinents et optimiser les stratégies de recrutement.</p>
+              <div class="tl-badges">
+                <span class="tl-badge dark">📍 Liège, Belgique</span>
+                <span class="tl-badge dark">CDI</span>
+              </div>
+              <div class="tl-date tl-date-soft">Septembre 2025 — Aujourd'hui</div>
+              <ul class="tl-bullets">
+                <li>Construction de zéro de l'écosystème data scouting : collecte, traitement et consolidation des données <strong>StatsBomb</strong> & <strong>SkillCorner</strong>.</li>
+                <li>Développement de <strong>modèles d'évaluation de joueurs</strong> et d'outils de comparaison de profils pour le staff recrutement.</li>
+                <li>Dashboards et visualisations sous <strong>Power BI</strong> et <strong>Streamlit</strong> pour l'aide à la décision.</li>
+                <li>Pipelines automatisés de <strong>matching multi-fournisseurs</strong> (joueurs, équipes, saisons, compétitions).</li>
+                <li>Application interne Streamlit : exploration des performances, <strong>watchlists</strong>, analyse des matchs à venir.</li>
+              </ul>
             </div>
             <div class="tl-item">
-              <div class="tl-top"><h4>Data Scientist — Datatim</h4></div>
-              <div class="tl-date">📍 2024 — 2025 · Rennes, France</div>
-              <p>Pilotage de la qualité et des flux de données, création de tableaux de bord adaptés aux besoins métiers et veille active sur les innovations en Data et IA.</p>
+              <div class="tl-top"><h4>Data Scientist & Chargé de Projets Décisionnels — Datatim</h4></div>
+              <div class="tl-badges">
+                <span class="tl-badge dark">📍 Rennes, France</span>
+                <span class="tl-badge dark">CDI</span>
+              </div>
+              <div class="tl-date tl-date-soft">Décembre 2024 — Août 2025</div>
+              <ul class="tl-bullets">
+                <li>Accompagnement de <strong>PME</strong> dans la mise en place de solutions décisionnelles : architecture data, ETL, automatisation, IA.</li>
+                <li>Conception de <strong>rapports interactifs</strong> et tableaux de bord, consolidation et maintenance des solutions.</li>
+                <li>Veille technologique active sur les outils <strong>BI & IA</strong>.</li>
+              </ul>
             </div>
             <div class="tl-item">
               <div class="tl-top"><h4>Apprenti Data Scientist — Ministère des Armées</h4></div>
-              <div class="tl-date">📍 2021 — 2024 · Bruz, France</div>
-              <p>Développement de démonstrateurs en Machine Learning, Deep Learning et NLP, dashboards interactifs, outils d'aide à la décision basés sur l'analyse de données complexes.</p>
+              <div class="tl-badges">
+                <span class="tl-badge dark">📍 Bruz, France</span>
+                <span class="tl-badge dark">Alternance</span>
+              </div>
+              <div class="tl-date tl-date-soft">Octobre 2021 — Septembre 2024</div>
+              <ul class="tl-bullets">
+                <li>Démonstrateur de <strong>Machine Learning</strong> pour le matching automatique CV / fiche de poste, dashboard QlikSense associé.</li>
+                <li>Démonstrateur de <strong>Deep Learning</strong> pour la reconnaissance automatique de bateaux sur images satellitaires.</li>
+                <li>Démonstrateur de <strong>Deep Learning</strong> pour la détection de voix Deepfake, interface interactive Streamlit.</li>
+                <li>Contribution au projet <strong>MatchCV</strong> (Programme 10% — DINUM x Insee) pour faciliter l'accès à l'emploi public.</li>
+              </ul>
             </div>
             <div class="tl-item">
               <div class="tl-top"><h4>Stagiaire Data Scientist — Parma Calcio 1913</h4></div>
-              <div class="tl-date">📍 2023 · Parma, Italie · Serie A</div>
-              <p>Conception d'un modèle d'estimation de la valeur marchande des joueurs, analyses statistiques ponctuelles et préparation de tables pour les projets de data visualisation.</p>
+              <div class="tl-badges">
+                <span class="tl-badge dark">📍 Parme, Italie</span>
+                <span class="tl-badge dark">Stage</span>
+              </div>
+              <div class="tl-date tl-date-soft">Mai 2023 — Août 2023</div>
+              <ul class="tl-bullets">
+                <li>Conception d'un modèle <strong>XGBoost</strong> d'estimation de la valeur marchande des joueurs lors d'un transfert.</li>
+                <li>Préparation des données via requêtes <strong>SQL</strong>, optimisation et ajustement des hyperparamètres.</li>
+                <li>Réalisation d'une <strong>application Streamlit</strong> interactive et documentation complète du projet.</li>
+              </ul>
             </div>
             <div class="tl-item">
-              <div class="tl-top"><h4>Bénévole Data Analyst — Vannes Olympique Club</h4></div>
-              <div class="tl-date">📍 2022 — 2023 · Vannes, France · National 2</div>
-              <p>Tableau de bord hebdomadaire de suivi de la charge externe GPS avec objectifs individualisés pour optimiser la préparation physique.</p>
+              <div class="tl-top"><h4>Data Analyst — Vannes Olympique Club</h4></div>
+              <div class="tl-badges">
+                <span class="tl-badge dark">📍 Vannes, France</span>
+                <span class="tl-badge dark">Indépendant</span>
+              </div>
+              <div class="tl-date tl-date-soft">Juillet 2022 — Juin 2023</div>
+              <ul class="tl-bullets">
+                <li>Analyse des données <strong>GPS</strong> pour évaluer la performance et la charge externe des joueurs.</li>
+                <li>Tableau de bord <strong>Power BI</strong> hebdomadaire avec objectifs individualisés par joueur.</li>
+              </ul>
             </div>
             <div class="tl-item">
-              <div class="tl-top"><h4>Apprenti Data Analyst — Union Sport & Cycle</h4></div>
-              <div class="tl-date">📍 2020 — 2021 · Paris, France</div>
-              <p>Tableaux de bord Power BI et analyse de données économiques pour les décisions stratégiques de la filière sport.</p>
+              <div class="tl-top"><h4>Chargé d'étude & Business/Data Analyst — Union Sport & Cycle</h4></div>
+              <div class="tl-badges">
+                <span class="tl-badge dark">📍 Paris, France</span>
+                <span class="tl-badge dark">Alternance</span>
+              </div>
+              <div class="tl-date tl-date-soft">Septembre 2020 — Septembre 2021</div>
+              <ul class="tl-bullets">
+                <li>Conception et pilotage d'<strong>enquêtes quantitatives</strong> : questionnaires, codage, analyse, restitution.</li>
+                <li>Tableaux de bord <strong>Power BI</strong> et définition de KPI pour la prise de décision.</li>
+                <li>Études de marché sectorielles (ski, tennis, cyclisme) au service des stratégies commerciales.</li>
+              </ul>
             </div>
           </div>
         </div>
@@ -1501,17 +1572,17 @@
           <div class="tl-items">
             <div class="tl-item">
               <div class="tl-top"><h4>Diplôme d'Ingénieur — Big Data & Intelligence Artificielle</h4><span class="tl-tag">BAC +5</span></div>
-              <div class="tl-date">📍 2021 — 2024 · CNAM, Niort</div>
+              <div class="tl-date tl-date-soft">📍 2021 — 2024 · CNAM, Niort</div>
               <p>Spécialisé en Data Science, Machine Learning, Big Data et IA avec applications en modélisation prédictive et visualisation.</p>
             </div>
             <div class="tl-item">
               <div class="tl-top"><h4>DUT Statistique & Informatique Décisionnelle (STID)</h4><span class="tl-tag">BAC +2</span></div>
-              <div class="tl-date">📍 2019 — 2021 · IUT Paris Descartes</div>
+              <div class="tl-date tl-date-soft">📍 2019 — 2021 · IUT de Paris – Rives de Seine</div>
               <p>Formation orientée analyse statistique, programmation, data visualisation et aide à la décision.</p>
             </div>
             <div class="tl-item">
               <div class="tl-top"><h4>Baccalauréat Scientifique — Section Européenne Anglais</h4></div>
-              <div class="tl-date">📍 2016 — 2019 · Lycée Saint-Paul, Vannes</div>
+              <div class="tl-date tl-date-soft">📍 2016 — 2019 · Lycée Saint-Paul, Vannes</div>
             </div>
           </div>
         </div>
@@ -1524,7 +1595,7 @@
                 <h4>Lauréat — Opta Forum Research 2024 · Stats Perform</h4>
                 <span class="tl-tag" style="background:rgba(212,168,67,0.15);border-color:rgba(212,168,67,0.4);color:var(--gold);">🏆 Londres</span>
               </div>
-              <div class="tl-date">📍 2024 · Opta Forum, Londres</div>
+              <div class="tl-date tl-date-soft">📍 2024 · Opta Forum, Londres</div>
               <p>Lauréat dans la catégorie "Event Data" avec <strong style="color:var(--text)">"Analyse de l'impact des touches dans le football moderne"</strong>. Présentation des résultats sur scène à Londres. Vidéo disponible : <a href="https://www.statsperform.com/fr/2024-opta-forum-session-videos/" target="_blank" style="color:var(--gold);">voir la présentation</a></p>
             </div>
           </div>
@@ -1639,6 +1710,15 @@
         </div>
         <div style="height:32px;"></div>
         <div class="press-grid reveal">
+          <!-- <a href="https://www.dhnet.be/sports/football/division-1a/standard/2026/04/18/filtres-datas-visionnages-et-feeling-humain-les-secrets-de-la-nouvelle-cellule-de-recrutement-du-standard-et-de-son-developpeur-francais-IFBDNGK6DFEGLA2GARFR6QNSAE/" target="_blank" rel="noopener noreferrer" class="press-card">
+            <div class="press-source-badge">DH<br>Sports</div>
+            <div class="press-body">
+              <div class="press-meta"><span class="press-source-name">DH Les Sports</span><span class="press-date">2026</span></div>
+              <div class="press-title">« Filtres datas, visionnages et feeling humain : les secrets de la nouvelle cellule de recrutement du Standard et de son développeur français »</div>
+              <p class="press-desc">Reportage sur la structuration de la cellule data scouting du Standard de Liège et le rôle de la data dans les décisions de recrutement.</p>
+            </div>
+            <svg class="press-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a> -->
           <a href="https://www.ouest-france.fr/bretagne/sene-56860/entretien-avec-les-big-data-ce-sinagot-analyse-limpact-des-touches-dans-le-football-professionnel-3f043ea6-fd5d-11ee-ace2-9fae4b2f67b4" target="_blank" rel="noopener noreferrer" class="press-card">
             <div class="press-source-badge">Ouest<br>France</div>
             <div class="press-body">
@@ -1857,23 +1937,47 @@ navBtns.forEach(b => b.addEventListener('click', () => { if (window.innerWidth <
   })();
 })();
 
+</script>
+
+<script>
+'use strict';
 (function() {
-  const el = document.getElementById('typewriterText');
-  if (!el) return;
-  const phrases = ['Data · Analytics Sportives','Scouting · Data-Driven','Performance · Recrutement','Big Data & IA · Football'];
-  let pi = 0, ci = phrases[0].length, deleting = false;
-  function tick() {
-    const phrase = phrases[pi];
-    if (!deleting) {
-      el.textContent = phrase.slice(0, ++ci);
-      if (ci === phrase.length) { deleting = true; setTimeout(tick, 2200); return; }
-    } else {
-      el.textContent = phrase.slice(0, --ci);
-      if (ci === 0) { deleting = false; pi = (pi + 1) % phrases.length; setTimeout(tick, 400); return; }
+  function start() {
+    const el = document.getElementById('typewriterText');
+    const emojiEl = document.getElementById('twEmoji');
+    if (!el) return;
+    const items = [
+      ['⚽','Data · Analytics Sportives'],
+      ['🔎','Scouting · Data-Driven'],
+      ['📈','Performance · Recrutement'],
+      ['🧠','Big Data & IA · Football'],
+      ['🏆','Opta Forum 2024 · Lauréat']
+    ];
+    let pi = 0, ci = items[0][1].length, deleting = true;
+    function tick() {
+      const phrase = items[pi][1];
+      if (!deleting) {
+        el.textContent = phrase.slice(0, ++ci);
+        if (ci === phrase.length) { deleting = true; setTimeout(tick, 1800); return; }
+      } else {
+        el.textContent = phrase.slice(0, --ci);
+        if (ci === 0) {
+          deleting = false;
+          pi = (pi + 1) % items.length;
+          if (emojiEl) emojiEl.textContent = items[pi][0];
+          setTimeout(tick, 350);
+          return;
+        }
+      }
+      setTimeout(tick, deleting ? 35 : 65);
     }
-    setTimeout(tick, deleting ? 40 : 75);
+    setTimeout(tick, 1500);
   }
-  setTimeout(tick, 2500);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', start);
+  } else {
+    start();
+  }
 })();
 </script>
 </body>
