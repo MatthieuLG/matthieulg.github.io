@@ -1,0 +1,31 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from './Nav.astro';
+import Footer from './Footer.astro';
+import ShotLab from './ShotLab';
+import { demoText } from '../i18n/demo';
+import type { Lang } from '../i18n';
+import { typo } from '../lib/typo';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = demoText[lang];
+---
+
+<Base lang={lang} page="demo" title={t.metaTitle} description={t.metaDescription}>
+  <Nav lang={lang} page="demo" />
+  <main id="contenu" class="@container bg-pelouse pb-24 pt-28 lg:pb-32 lg:pt-36">
+    <div class="gutter">
+      <header class="mb-11 lg:mb-14">
+        <h1 class="display display-section">{t.title}</h1>
+        <p class="mt-6 max-w-[64ch] text-[1.0625rem] leading-[1.65] text-brume">{typo(t.lede, lang)}</p>
+      </header>
+
+      <!-- Tout se passe dans le navigateur : l'île charge les données à l'affichage. -->
+      <ShotLab client:load t={t} lang={lang} />
+    </div>
+  </main>
+  <Footer lang={lang} />
+</Base>

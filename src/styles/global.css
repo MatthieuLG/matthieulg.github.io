@@ -1,0 +1,309 @@
+@import "tailwindcss";
+@import "@fontsource-variable/archivo/wdth.css";
+
+/* ───────────── Identité V2 ─────────────
+   Pelouse = le terrain (visualisation). Craie = le rapport (lecture).
+   Ballon  = l'attention : poste actuel, élément actif, termes surlignés.
+   Une seule famille, Archivo variable : large et grasse pour les titres
+   (lettrage de maillot), normale pour le texte, étroite pour les chiffres. */
+@theme {
+  --font-sans: "Archivo Variable", "Archivo", ui-sans-serif, system-ui, sans-serif;
+
+  --color-pelouse: #0d3b2e;
+  --color-pelouse-ombre: #0a2f25;
+  --color-craie: #eef1ea;
+  --color-encre: #0a1f18;
+  --color-ballon: #ffd84a;
+  --color-ballon-clair: #ffe89a;
+  --color-brume: #a5c0b4;   /* texte secondaire sur pelouse */
+  --color-ardoise: #55635c; /* texte secondaire sur craie */
+
+  --breakpoint-lg: 64rem;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
+  body {
+    background: var(--color-pelouse);
+    color: var(--color-craie);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    font-optical-sizing: auto;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-ballon);
+    outline-offset: 3px;
+  }
+  .on-craie :focus-visible { outline-color: var(--color-encre); }
+  ::selection { background: var(--color-ballon); color: var(--color-encre); }
+}
+
+@layer components {
+  /* Gouttière commune à toutes les sections */
+  .gutter {
+    padding-inline: clamp(1.25rem, 5vw, 4.5rem);
+  }
+
+  /* Titres : Archivo large, capitales, façon lettrage de maillot */
+  .display {
+    font-stretch: 125%;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    line-height: 0.88;
+  }
+  /* Le nom occupe toute la largeur de sa colonne, quelle que soit la mise en page */
+  .display-name {
+    font-size: clamp(2.5rem, calc((100cqi - 2 * clamp(1.25rem, 5vw, 4.5rem)) / 6.65), 9.5rem);
+  }
+  .display-section {
+    font-size: clamp(2.25rem, 6cqi, 4.75rem);
+  }
+  .display-contact {
+    font-size: clamp(2.5rem, 6.2cqi, 5.75rem);
+  }
+
+  /* Navigation */
+  .nav-link { transition: color 0.18s; }
+  .nav-link:hover,
+  .nav-link[aria-current] { color: var(--color-ballon); }
+
+  /* Champs de formulaire (démo) */
+  .field {
+    width: 100%;
+    min-height: 3rem;
+    padding: 0.6rem 2.75rem 0.6rem 0.9rem;
+    border: 1px solid color-mix(in srgb, var(--color-craie) 40%, transparent);
+    border-radius: 3px;
+    background: var(--color-pelouse-ombre);
+    color: var(--color-craie);
+    color-scheme: dark;
+    font: inherit;
+    font-weight: 600;
+    appearance: none;
+    text-overflow: ellipsis;
+    transition: border-color 0.18s;
+  }
+  .field:hover:not(:disabled) { border-color: var(--color-craie); }
+  .field:disabled { color: var(--color-brume); }
+
+  /* Interrupteur de langue FR / EN */
+  .lang-switch {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    height: 2.75rem;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+  .lang-opt { color: var(--color-brume); transition: color 0.17s; }
+  .lang-opt[data-on] { color: var(--color-craie); }
+  .lang-track {
+    position: relative;
+    width: 2.5rem;
+    height: 1.375rem;
+    border: 1.5px solid color-mix(in srgb, var(--color-craie) 55%, transparent);
+    border-radius: 999px;
+    transition: border-color 0.17s;
+  }
+  .lang-switch:hover .lang-track { border-color: var(--color-craie); }
+  .lang-thumb {
+    position: absolute;
+    top: 50%;
+    left: 0.1875rem;
+    width: 0.8125rem;
+    height: 0.8125rem;
+    margin-top: -0.40625rem;
+    border-radius: 999px;
+    background: var(--color-ballon);
+    transition: transform 0.17s cubic-bezier(0.3, 0, 0.2, 1);
+  }
+  /* Curseur à gauche en français, à droite en anglais ; il glisse au clic. */
+  .lang-switch[data-lang="en"] .lang-thumb { transform: translateX(1.125rem); }
+  .lang-switch[data-lang="fr"].is-switching .lang-thumb { transform: translateX(1.125rem); }
+  .lang-switch[data-lang="en"].is-switching .lang-thumb { transform: none; }
+  .lang-switch.is-switching .lang-opt { color: var(--color-brume); }
+  .lang-switch.is-switching .lang-opt:not([data-on]) { color: var(--color-craie); }
+  @media (prefers-reduced-motion: reduce) {
+    .lang-thumb, .lang-opt { transition: none; }
+  }
+
+  /* Chaîne de valeur (Expertise) : des points reliés, comme une séquence de passes */
+  .chain-node {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1.5px solid var(--color-encre);
+    border-radius: 999px;
+    background: var(--color-craie);
+    font-weight: 700;
+    font-size: 1.25rem;
+  }
+  .chain-step { position: relative; }
+  /* Liaison vers le maillon suivant : verticale sur mobile, horizontale sur grand écran */
+  .chain-step:not(:last-child)::before {
+    content: "";
+    position: absolute;
+    left: calc(1.375rem - 0.75px);
+    top: 2.75rem;
+    bottom: -2.5rem;
+    width: 1.5px;
+    background: var(--color-encre);
+  }
+  .chain-step:last-child .chain-node {
+    background: var(--color-ballon);
+    border-color: var(--color-ballon);
+  }
+  @media (min-width: 64rem) {
+    .chain-step:not(:last-child)::before {
+      left: 2.75rem;
+      right: -2.5rem;
+      top: calc(1.375rem - 0.75px);
+      bottom: auto;
+      width: auto;
+      height: 1.5px;
+    }
+  }
+
+  /* Presse */
+  .press-title {
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.18em;
+    transition: text-decoration-color 0.2s;
+  }
+  .press-row:hover .press-title { text-decoration-color: var(--color-ballon); }
+  .press-arrow { transition: transform 0.2s; }
+  .press-row:hover .press-arrow { transform: translate(2px, -2px); }
+  @media (prefers-reduced-motion: reduce) {
+    .press-arrow { transition: none; }
+  }
+
+  /* Chiffres : Archivo étroite, tabulaire */
+  .figures {
+    font-stretch: 70%;
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 3rem;
+    padding: 0.7rem 1.15rem;
+    border-radius: 3px;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    line-height: 1.2;
+    transition: background-color 0.18s, color 0.18s, border-color 0.18s;
+  }
+  .btn-ballon { background: var(--color-ballon); color: var(--color-encre); }
+  .btn-ballon:hover { background: var(--color-craie); }
+  .btn-ligne { border: 1px solid rgb(238 241 234 / 0.4); color: var(--color-craie); }
+  .btn-ligne:hover { border-color: var(--color-craie); background: rgb(238 241 234 / 0.08); }
+
+  .link {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.22em;
+    text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+    transition: text-decoration-color 0.18s;
+  }
+  .link:hover { text-decoration-color: currentColor; }
+
+  /* Texte de présentation : justifié, avec césure française pour éviter les blancs */
+  .justifie {
+    hyphens: auto;
+    -webkit-hyphens: auto;
+    text-wrap: pretty;
+  }
+  /* En colonne étroite, la justification creuse des blancs : elle s'applique à partir de 40rem. */
+  @media (min-width: 40rem) {
+    .justifie { text-align: justify; }
+  }
+
+  /* Ancres : la section s'arrête sous la barre de navigation */
+  .anchor { scroll-margin-top: 3.5rem; }
+
+  .lede { font-size: 1.125rem; line-height: 1.5; max-width: 52ch; }
+
+  /* Surlignage au feutre des termes clés */
+  .hl {
+    background: none;
+    color: inherit;
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-color: var(--color-ballon);
+    text-decoration-thickness: 0.42em;
+    text-underline-offset: -0.24em;
+    text-decoration-skip-ink: none;
+  }
+
+  /* ── Terrain : tailles de texte en mètres (unités du viewBox) ── */
+  .pitch-label { font-size: 2.75px; }
+  .pitch-sub { font-size: 2.3px; }
+  .pitch-year { font-size: 2.3px; }
+  @media (min-width: 64rem) {
+    .pitch-label { font-size: 2.4px; }
+    .pitch-sub { font-size: 2px; }
+    .pitch-year { font-size: 2px; }
+  }
+  .pitch-node { cursor: pointer; }
+  .pitch-node:focus-visible { outline: none; }
+
+  /* ── Entrées du parcours ── */
+  .entry {
+    scroll-margin-top: 22vh;
+  }
+  .entry-num {
+    font-stretch: 62%;
+    font-weight: 700;
+    font-size: clamp(3rem, 9cqi, 4.75rem);
+    line-height: 0.8;
+    font-variant-numeric: lining-nums;
+    color: color-mix(in srgb, var(--color-encre) 20%, transparent);
+    transition: color 0.3s;
+  }
+  .entry[data-active] .entry-num { color: var(--color-encre); }
+
+  .entry-diamond {
+    width: 1.05rem;
+    height: 1.05rem;
+    margin: 0.45rem 0 0 0.35rem;
+    rotate: 45deg;
+    border: 1.5px solid color-mix(in srgb, var(--color-encre) 35%, transparent);
+    transition: background-color 0.3s, border-color 0.3s;
+  }
+  .entry[data-active] .entry-diamond {
+    background: var(--color-encre);
+    border-color: var(--color-encre);
+  }
+
+  .entry-list li {
+    position: relative;
+    padding-left: 1.25rem;
+  }
+  .entry-list li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.8em;
+    width: 0.55rem;
+    height: 1.5px;
+    background: color-mix(in srgb, var(--color-encre) 45%, transparent);
+  }
+}

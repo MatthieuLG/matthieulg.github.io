@@ -1,0 +1,65 @@
+---
+import Projects from './Projects';
+import { categories, projects } from '../data/projects';
+import { ArrowRight } from 'lucide-react';
+import { paths, ui, type Lang } from '../i18n';
+import { site } from '../data/site';
+import { typo } from '../lib/typo';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = ui[lang];
+
+// Les textes sont résolus ici : l'île React ne reçoit que la langue affichée.
+const sport = (id: string) => categories.find((c) => c.id === id)!.label[lang];
+const items = projects.map((p) => ({
+  id: p.id,
+  category: p.category,
+  title: p.title[lang],
+  meta: `${sport(p.category)}, ${p.domain[lang]}`,
+  context: p.context[lang],
+  year: p.year,
+  award: p.award?.[lang],
+  description: typo(p.description[lang], lang),
+  steps: p.steps[lang].map((s) => typo(s, lang)),
+  stack: p.stack,
+  links: p.links.map((l) => ({ label: l.label[lang], href: l.href })),
+}));
+const filters = categories.map((c) => ({ id: c.id, label: c.label[lang] }));
+---
+
+<section id="projets" class="anchor @container bg-pelouse pb-24 pt-20 lg:pb-32 lg:pt-28">
+  <div class="gutter">
+    <header class="mb-11">
+      <h2 class="display display-section">{t.projectsTitle}</h2>
+      <p class="lede mt-5 text-brume">{typo(t.projectsLede, lang)}</p>
+    </header>
+
+    <Projects
+      client:visible
+      projects={items}
+      categories={filters}
+      labels={{ filter: t.projectsFilter, steps: t.steps, tools: t.tools }}
+    />
+
+    {
+      site.demo && (
+    <div class="mt-14 flex flex-wrap items-center justify-between gap-x-10 gap-y-5 bg-pelouse-ombre px-6 py-6 sm:px-8 lg:mt-16">
+      <p class="max-w-[72ch]">
+        <span class="mr-3 inline-flex items-center gap-2.5 font-bold [font-stretch:104%]">
+          <span class="size-2 rounded-full bg-ballon" aria-hidden="true" />
+          {t.demo}
+        </span>
+        <span class="text-brume">{t.demoTeaser}</span>
+      </p>
+      <a class="btn btn-ballon" href={paths.demo[lang]} data-goatcounter-click="demo-depuis-projets">
+        {t.demoOpen}
+        <ArrowRight size={17} strokeWidth={2.2} aria-hidden="true" />
+      </a>
+    </div>
+      )
+    }
+  </div>
+</section>

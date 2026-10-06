@@ -1,0 +1,69 @@
+---
+import '../styles/global.css';
+import { profile } from '../data/profile';
+import { site } from '../data/site';
+import { paths, ui, type Lang, type PageId } from '../i18n';
+
+interface Props {
+  lang: Lang;
+  /** Page traduite : sert aux liens canoniques et alternatifs. Absent pour la page 404. */
+  page?: PageId;
+  title?: string;
+  description?: string;
+}
+const { lang, page } = Astro.props;
+const t = ui[lang];
+const title = Astro.props.title ?? profile.meta.title[lang];
+const description = Astro.props.description ?? profile.meta.description[lang];
+const url = (l: Lang) => (page ? new URL(paths[page][l], Astro.site).href : undefined);
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {
+      page ? (
+        <>
+          <link rel="canonical" href={url(lang)} />
+          <link rel="alternate" hreflang="fr" href={url('fr')} />
+          <link rel="alternate" hreflang="en" href={url('en')} />
+          <link rel="alternate" hreflang="x-default" href={url('fr')} />
+          <meta property="og:url" content={url(lang)} />
+        </>
+      ) : (
+        <meta name="robots" content="noindex" />
+      )
+    }
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta name="theme-color" content="#0d3b2e" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:locale" content={lang === 'fr' ? 'fr_FR' : 'en_GB'} />
+    {
+      /* Mesure d'audience sans cookies : chargée uniquement sur le site publié, si un code est renseigné. */
+      site.goatcounter && import.meta.env.PROD && (
+        <script
+          is:inline
+          data-goatcounter={`https://${site.goatcounter}.goatcounter.com/count`}
+          async
+          src="https://gc.zgo.at/count.js"
+        />
+      )
+    }
+  </head>
+  <body>
+    <a
+      href="#contenu"
+      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-[3px] focus:bg-ballon focus:px-4 focus:py-2 focus:font-semibold focus:text-encre"
+    >
+      {t.skip}
+    </a>
+    <slot />
+  </body>
+</html>

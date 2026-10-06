@@ -1,0 +1,59 @@
+---
+import { Download, Mail, Play, Trophy } from 'lucide-react';
+import { profile } from '../data/profile';
+import { ui, type Lang } from '../i18n';
+import { typo } from '../lib/typo';
+
+interface Props {
+  lang: Lang;
+  class?: string;
+}
+const { lang, class: className } = Astro.props;
+const t = ui[lang];
+---
+
+<section id="accueil" class:list={['@container flex flex-col justify-end pb-12 pt-28 lg:min-h-svh lg:pb-16 lg:pt-32', className]}>
+  <div class="gutter">
+    <h1 class="display display-name">
+      <span class="block">{profile.firstName}</span>
+      <span class="block">{profile.lastName}</span>
+    </h1>
+
+    <p class="mt-7 text-[1.375rem] font-medium leading-[1.25] sm:text-2xl lg:mt-9">
+      <span class="block text-balance">{profile.role}</span>
+      <span class="block">{t.at} {profile.club}</span>
+    </p>
+
+    <p class="justifie mt-5 max-w-[60ch] text-[1.0625rem] leading-[1.65] text-brume">
+      {typo(profile.intro[lang], lang)}
+    </p>
+
+    <div class="mt-8 flex flex-wrap gap-3">
+      <a class="btn btn-ballon" href={profile.cv[lang]} target="_blank" rel="noopener" data-goatcounter-click="cv">
+        <Download size={18} strokeWidth={2.2} aria-hidden="true" />
+        {t.downloadCv}
+      </a>
+      <a class="btn btn-ligne" href={`mailto:${profile.email}`} data-goatcounter-click="email">
+        <Mail size={18} strokeWidth={2} aria-hidden="true" />
+        {t.sendEmail}
+      </a>
+    </div>
+
+    <p class="mt-10 flex max-w-[58ch] items-start gap-3 text-[0.9375rem] leading-[1.5] text-brume lg:mt-14">
+      <Trophy className="mt-0.5 shrink-0 text-ballon" size={18} strokeWidth={2} aria-hidden="true" />
+      <span>
+        {profile.award.label[lang]}.{' '}
+        <a
+          class="link inline-flex items-center gap-1.5 whitespace-nowrap font-semibold text-ballon-clair"
+          href={profile.award.href}
+          target="_blank"
+          rel="noopener"
+          data-goatcounter-click="video-opta-forum"
+        >
+          <Play size={13} strokeWidth={0} fill="currentColor" aria-hidden="true" />
+          {profile.award.linkLabel[lang]}
+        </a>
+      </span>
+    </p>
+  </div>
+</section>

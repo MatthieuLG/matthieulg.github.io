@@ -1,0 +1,51 @@
+---
+import { ArrowUpRight } from 'lucide-react';
+import { press } from '../data/press';
+import { ui, type Lang } from '../i18n';
+import { typo } from '../lib/typo';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = ui[lang];
+---
+
+<section id="presse" class="anchor on-craie @container bg-craie pb-24 pt-20 text-encre lg:pb-32 lg:pt-28">
+  <div class="gutter">
+    <header>
+      <h2 class="display display-section">{t.pressTitle}</h2>
+      <p class="lede mt-5 text-ardoise">{t.pressLede}</p>
+    </header>
+
+    <ul class="mt-12 border-b border-encre/12 lg:mt-14">
+      {
+        press.map((item) => (
+          <li class="border-t border-encre/12">
+            <a
+              href={item.href}
+              target="_blank"
+              rel="noopener"
+              class="press-row group grid gap-x-10 gap-y-4 py-9 lg:grid-cols-[11rem_minmax(0,1fr)_auto] lg:py-11"
+            >
+              <p class="flex items-baseline gap-4 lg:block">
+                <span class="block text-[1.0625rem] font-bold">{item.source}</span>
+                <span class="figures block text-[1.0625rem] font-medium text-ardoise lg:mt-1">{item.year}</span>
+              </p>
+              <div>
+                <h3 lang="fr" class="press-title max-w-[38ch] text-[1.5rem] font-bold leading-[1.2] tracking-[-0.01em] [font-stretch:104%] sm:text-[1.875rem]">
+                  «&nbsp;{typo(item.title)}&nbsp;»
+                </h3>
+                <p class="mt-4 max-w-[62ch] leading-[1.6] text-encre/85">{item.description[lang]}</p>
+              </div>
+              <p class="flex items-center gap-2 self-start whitespace-nowrap text-[0.9375rem] font-semibold lg:pt-2">
+                {t.readOn} {item.site}
+                <ArrowUpRight className="press-arrow" size={18} strokeWidth={2.2} aria-hidden="true" />
+              </p>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

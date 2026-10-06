@@ -1,0 +1,17 @@
+---
+import { profile } from '../data/profile';
+import { ui, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = ui[lang];
+---
+
+<footer class="gutter bg-pelouse-ombre py-8 text-[0.875rem] text-brume">
+  <div class="flex flex-wrap items-baseline justify-between gap-x-10 gap-y-2">
+    <p><span class="font-semibold text-craie">{profile.name}</span>, {profile.role} {t.at} {profile.club}</p>
+    <a class="link" href="#top">{t.backToTop}</a>
+  </div>
+</footer>

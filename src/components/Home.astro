@@ -1,0 +1,88 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from './Nav.astro';
+import Hero from './Hero.astro';
+import Parcours from './Parcours.astro';
+import Projets from './Projets.astro';
+import Expertise from './Expertise.astro';
+import References from './References.astro';
+import Press from './Press.astro';
+import Contact from './Contact.astro';
+import Footer from './Footer.astro';
+import CareerPitch from './CareerPitch';
+import { contracts, experiences, formations } from '../data/parcours';
+import { ui, type Lang } from '../i18n';
+import { buildTimeAxis, type PitchNode } from '../lib/pitch';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = ui[lang];
+
+// Chaque étape du parcours devient un point sur le terrain :
+// une expérience à son année de début, un diplôme à son année d'obtention.
+const startYear = (date: string) => Number(date.slice(0, 4));
+// L'axe se termine sur l'année en cours (celle du dernier build).
+const axis = buildTimeAxis(
+  [...formations.map((f) => f.endYear), ...experiences.map((xp) => startYear(xp.start))],
+  new Date().getFullYear(),
+);
+
+const nodes: PitchNode[] = [
+  ...formations.map((f) => ({
+    id: f.id,
+    kind: 'formation' as const,
+    label: f.pitch.label[lang],
+    sub: f.pitch.sub?.[lang],
+    x: f.pitch.x,
+    y: axis.yOf(f.endYear),
+  })),
+  ...experiences.map((xp) => {
+    const contract = contracts[xp.contract][lang];
+    return {
+      id: xp.id,
+      kind: 'experience' as const,
+      n: xp.order,
+      label: xp.pitch.label[lang],
+      sub: xp.end === null ? `${contract}, ${t.currentRole}` : contract,
+      x: xp.pitch.x,
+      y: axis.yOf(startYear(xp.start)),
+      current: xp.end === null,
+    };
+  }),
+];
+---
+
+<Base lang={lang} page="home">
+  <Nav lang={lang} page="home" />
+  <main id="contenu">
+    <!-- Le terrain reste fixe à droite pendant que la colonne de gauche défile : accueil, puis parcours. -->
+    <div class="lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(24rem,41vw)]">
+      <Hero lang={lang} class="lg:col-start-1 lg:row-start-1" />
+
+      <aside
+        class="lg:sticky lg:top-0 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:h-svh lg:min-h-[36rem] lg:self-start"
+        aria-label={t.pitchAside}
+      >
+        <CareerPitch
+          client:load
+          nodes={nodes}
+          years={axis.rows}
+          label={t.pitchLabel}
+          hint={t.pitchHint}
+          replayLabel={t.pitchReplay}
+        />
+      </aside>
+
+      <Parcours lang={lang} class="lg:col-start-1 lg:row-start-2" />
+    </div>
+
+    <Projets lang={lang} />
+    <Expertise lang={lang} />
+    <References lang={lang} />
+    <Press lang={lang} />
+    <Contact lang={lang} />
+  </main>
+  <Footer lang={lang} />
+</Base>

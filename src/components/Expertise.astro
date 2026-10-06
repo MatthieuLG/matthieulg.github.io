@@ -1,0 +1,52 @@
+---
+import { services, skills } from '../data/expertise';
+import { ui, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = ui[lang];
+---
+
+<section id="expertise" class="anchor on-craie @container bg-craie pb-24 pt-20 text-encre lg:pb-32 lg:pt-28">
+  <div class="gutter">
+    <header>
+      <h2 class="display display-section">{t.expertiseTitle}</h2>
+      <p class="lede mt-5 text-ardoise">{t.expertiseLede}</p>
+    </header>
+
+    <!-- La chaîne de valeur : quatre maillons reliés, comme une séquence de passes -->
+    <ol class="chain mt-14 grid gap-y-10 lg:mt-16 lg:grid-cols-4 lg:gap-x-10">
+      {
+        services.map((s, i) => (
+          <li class="chain-step grid grid-cols-[2.75rem_minmax(0,1fr)] gap-x-4 lg:block">
+            <div class="chain-node" aria-hidden="true">
+              <span class="figures">{i + 1}</span>
+            </div>
+            <div>
+              <h3 class="text-[1.1875rem] font-bold leading-[1.25] [font-stretch:104%] lg:mt-6">{s.title[lang]}</h3>
+              <p class="mt-2.5 max-w-[42ch] leading-[1.6] text-encre/85">{s.text[lang]}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+
+    <h3 class="mt-20 text-[1.0625rem] font-semibold lg:mt-24">{t.skills}</h3>
+    <dl class="mt-4 border-b border-encre/12">
+      {
+        skills.map((row) => (
+          <div class="grid gap-x-10 gap-y-2 border-t border-encre/12 py-5 md:grid-cols-[minmax(0,19rem)_minmax(0,1fr)]">
+            <dt class="text-ardoise">{row.group[lang]}</dt>
+            <dd>
+              <ul class="flex flex-wrap gap-x-7 gap-y-1.5 font-semibold">
+                {row.items[lang].map((item) => <li>{item}</li>)}
+              </ul>
+            </dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+</section>

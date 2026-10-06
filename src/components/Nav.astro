@@ -1,0 +1,161 @@
+---
+import { Download, Menu, X } from 'lucide-react';
+import LangSwitch from './LangSwitch.astro';
+import { profile, sections } from '../data/profile';
+import { site } from '../data/site';
+import { otherLang, paths, ui, type Lang, type PageId } from '../i18n';
+
+interface Props {
+  lang: Lang;
+  /** Page courante. Absent pour la page 404 (pas d'interrupteur de langue). */
+  page?: PageId;
+}
+const { lang, page } = Astro.props;
+const t = ui[lang];
+const cv = profile.cv[lang];
+// Sur l'accueil, les liens sont des ancres ; ailleurs, ils ramènent à l'accueil.
+const home = page === 'home' ? '' : paths.home[lang];
+const demo = paths.demo[lang];
+---
+
+<header id="site-nav" class="fixed inset-x-0 top-0 z-40 bg-pelouse text-craie">
+  <div class="gutter flex h-14 items-center justify-between gap-6 border-b border-craie/10">
+    <a href={home || '#accueil'} class="display text-[1.05rem] tracking-normal" aria-label={`${profile.name}, ${t.top}`}>MLG</a>
+
+    <nav aria-label={t.navMain} class="ml-auto hidden lg:block">
+      <ul class="flex items-center gap-7 text-[0.9375rem] font-medium">
+        {
+          sections.map((s) => (
+            <li>
+              <a class="nav-link" href={`${home}#${s.id}`} data-section={s.id}>
+                {s.label[lang]}
+              </a>
+            </li>
+          ))
+        }
+        {
+          site.demo && (
+            <li>
+              <a class="nav-link inline-flex items-center gap-2" href={demo} aria-current={page === 'demo' ? 'page' : undefined}>
+                <span class="size-1.5 rounded-full bg-ballon" aria-hidden="true" />
+                {t.demo}
+              </a>
+            </li>
+          )
+        }
+        <li>
+          <a class="nav-link inline-flex items-center gap-2" href={cv} target="_blank" rel="noopener" data-goatcounter-click="cv">
+            <Download size={15} strokeWidth={2.2} aria-hidden="true" />
+            {t.cv}
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="ml-auto flex items-center gap-3 lg:ml-0">
+      {page && <LangSwitch lang={lang} to={paths[page][otherLang(lang)]} />}
+
+      <button
+        id="menu-toggle"
+        type="button"
+        class="-mr-2 inline-flex h-11 items-center gap-2 px-2 text-[0.9375rem] font-semibold lg:hidden"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+      >
+        <span class="menu-open-label">{t.menu}</span>
+        <span class="menu-close-label hidden">{t.close}</span>
+        <Menu className="menu-open-label" size={20} aria-hidden="true" />
+        <X className="menu-close-label hidden" size={20} aria-hidden="true" />
+      </button>
+    </div>
+  </div>
+
+  <nav
+    id="mobile-menu"
+    aria-label={t.navMobile}
+    hidden
+    class="gutter fixed inset-x-0 bottom-0 top-14 overflow-y-auto bg-pelouse pb-10 pt-8 lg:hidden"
+  >
+    <ul class="display space-y-5 text-[2rem]">
+      {
+        sections.map((s) => (
+          <li>
+            <a href={`${home}#${s.id}`} data-section={s.id} class="nav-link block">
+              {s.label[lang]}
+            </a>
+          </li>
+        ))
+      }
+      {
+        site.demo && (
+          <li>
+            <a href={demo} class="nav-link flex items-center gap-4" aria-current={page === 'demo' ? 'page' : undefined}>
+              {t.demo}
+              <span class="size-2.5 rounded-full bg-ballon" aria-hidden="true" />
+            </a>
+          </li>
+        )
+      }
+    </ul>
+    <a class="btn btn-ballon mt-10" href={cv} target="_blank" rel="noopener" data-goatcounter-click="cv">
+      <Download size={18} strokeWidth={2.2} aria-hidden="true" />
+      {t.downloadCv}
+    </a>
+  </nav>
+</header>
+
+<script>
+  const toggle = document.getElementById('menu-toggle') as HTMLButtonElement | null;
+  const menu = document.getElementById('mobile-menu');
+
+  function setOpen(open: boolean) {
+    if (!toggle || !menu) return;
+    toggle.setAttribute('aria-expanded', String(open));
+    menu.hidden = !open;
+    document.documentElement.style.overflow = open ? 'hidden' : '';
+    toggle.querySelectorAll('.menu-open-label').forEach((el) => el.classList.toggle('hidden', open));
+    toggle.querySelectorAll('.menu-close-label').forEach((el) => el.classList.toggle('hidden', !open));
+  }
+
+  toggle?.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true'));
+  menu?.addEventListener('click', (e) => {
+    if ((e.target as HTMLElement).closest('a')) setOpen(false);
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') setOpen(false);
+  });
+  window.matchMedia('(min-width: 64rem)').addEventListener('change', () => setOpen(false));
+
+  // Section en cours de lecture : son lien est marqué dans la navigation,
+  // et l'interrupteur de langue pointe vers la même section dans l'autre langue.
+  const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('.nav-link[data-section]'));
+  const langSwitch = document.querySelector<HTMLAnchorElement>('[data-lang-switch]');
+  const targets = [...new Set(links.map((l) => l.dataset.section!))]
+    .map((id) => document.getElementById(id))
+    .filter((el): el is HTMLElement => el !== null);
+
+  let frame = 0;
+  function spy() {
+    frame = 0;
+    const line = window.innerHeight * 0.4;
+    let current = '';
+    for (const el of targets) {
+      if (el.getBoundingClientRect().top <= line) current = el.id;
+    }
+    links.forEach((l) => {
+      if (l.dataset.section === current) l.setAttribute('aria-current', 'true');
+      else l.removeAttribute('aria-current');
+    });
+    if (langSwitch) langSwitch.href = langSwitch.dataset.base + (current ? `#${current}` : '');
+  }
+  window.addEventListener('scroll', () => { if (!frame) frame = requestAnimationFrame(spy); }, { passive: true });
+  spy();
+
+  // Le curseur glisse avant le changement de page.
+  langSwitch?.addEventListener('click', (e) => {
+    if (e.metaKey || e.ctrlKey || e.shiftKey || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    e.preventDefault();
+    langSwitch.classList.add('is-switching');
+    window.setTimeout(() => { window.location.href = langSwitch.href; }, 170);
+  });
+</script>

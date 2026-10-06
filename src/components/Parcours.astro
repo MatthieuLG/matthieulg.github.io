@@ -1,0 +1,131 @@
+---
+import { Image } from 'astro:assets';
+import { contracts, experiencesByRecency, formations } from '../data/parcours';
+import { ui, type Lang } from '../i18n';
+import { formatPeriod, parseMarks } from '../lib/dates';
+import { typo } from '../lib/typo';
+
+interface Props {
+  lang: Lang;
+  class?: string;
+}
+const { lang, class: className } = Astro.props;
+const t = ui[lang];
+---
+
+<section id="parcours" class:list={['anchor on-craie @container bg-craie pb-24 pt-20 text-encre lg:pb-32 lg:pt-28', className]}>
+  <div class="gutter">
+    <header>
+      <h2 class="display display-section">{t.parcoursTitle}</h2>
+      <p class="mt-5 max-w-[46ch] text-lg leading-[1.5] text-ardoise">{t.parcoursLede}</p>
+    </header>
+
+    <!-- ── Expériences ── -->
+    <h3 class="mt-16 flex items-center gap-3 text-[1.0625rem] font-semibold lg:mt-20">
+      <span class="size-3 rounded-full bg-encre" aria-hidden="true"></span>
+      {t.experiences}
+    </h3>
+
+    <ol reversed class="mt-2">
+      {
+        experiencesByRecency.map((xp) => {
+          const period = formatPeriod(xp.start, xp.end, lang, t.today);
+          return (
+            <li
+              id={xp.id}
+              data-entry={xp.id}
+              class="entry grid grid-cols-[2.75rem_minmax(0,1fr)] gap-x-4 border-t border-encre/12 py-10 first:border-t-0 sm:grid-cols-[4.5rem_minmax(0,1fr)] lg:py-12"
+            >
+              <div class="entry-num" aria-hidden="true">{xp.order}</div>
+
+              <div>
+                <h4 class="text-[1.5rem] font-bold leading-[1.15] tracking-[-0.01em] [font-stretch:108%] sm:text-[1.75rem]">
+                  {xp.role[lang]}
+                </h4>
+
+                <p class="mt-3 flex items-center gap-3 text-[1.0625rem] font-semibold">
+                  <span class="flex h-9 w-10 shrink-0 items-center justify-center">
+                    <Image src={xp.logo} alt="" height={72} class="max-h-9 w-auto max-w-10 object-contain" loading="lazy" />
+                  </span>
+                  {xp.org[lang]}
+                </p>
+
+                <dl class="mt-5 grid grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-[minmax(0,1.6fr)_minmax(0,1.2fr)_minmax(0,1fr)]">
+                  <div class="col-span-2 sm:col-span-1">
+                    <dt class="text-[0.8125rem] text-ardoise">{t.period}</dt>
+                    <dd class="font-medium">{xp.end === null ? <mark class="hl">{period}</mark> : period}</dd>
+                  </div>
+                  <div>
+                    <dt class="text-[0.8125rem] text-ardoise">{t.place}</dt>
+                    <dd class="font-medium">{xp.place[lang]}</dd>
+                  </div>
+                  <div>
+                    <dt class="text-[0.8125rem] text-ardoise">{t.contract}</dt>
+                    <dd class="font-medium">{contracts[xp.contract][lang]}</dd>
+                  </div>
+                </dl>
+
+                <ul class="entry-list mt-6 max-w-[64ch] space-y-2.5 text-[1rem] leading-[1.6]">
+                  {xp.highlights[lang].map((line) => (
+                    <li>
+                      {parseMarks(typo(line, lang)).map((part) =>
+                        part.mark ? <mark class="hl">{part.text}</mark> : part.text,
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </li>
+          );
+        })
+      }
+    </ol>
+
+    <!-- ── Formation ── -->
+    <h3 class="mt-14 flex items-center gap-3 text-[1.0625rem] font-semibold lg:mt-20">
+      <span class="ml-0.5 size-2.5 rotate-45 border-[1.5px] border-encre" aria-hidden="true"></span>
+      {t.education}
+    </h3>
+
+    <ul class="mt-2">
+      {
+        formations.map((f) => (
+          <li
+            id={f.id}
+            data-entry={f.id}
+            class="entry grid grid-cols-[2.75rem_minmax(0,1fr)] gap-x-4 border-t border-encre/12 py-10 first:border-t-0 sm:grid-cols-[4.5rem_minmax(0,1fr)]"
+          >
+            <div aria-hidden="true"><div class="entry-diamond" /></div>
+
+            <div>
+              <h4 class="text-[1.375rem] font-bold leading-[1.2] tracking-[-0.01em] [font-stretch:108%] sm:text-[1.5rem]">
+                {f.title[lang]}
+              </h4>
+
+              <dl class="mt-5 grid grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-[minmax(0,1.6fr)_minmax(0,1.2fr)_minmax(0,1fr)]">
+                <div class="col-span-2 sm:col-span-1">
+                  <dt class="text-[0.8125rem] text-ardoise">{t.school}</dt>
+                  <dd class="font-medium">{f.school}, {f.place}</dd>
+                </div>
+                <div>
+                  <dt class="text-[0.8125rem] text-ardoise">{t.period}</dt>
+                  <dd class="font-medium">{f.startYear} – {f.endYear}</dd>
+                </div>
+                {
+                  f.level && (
+                    <div>
+                      <dt class="text-[0.8125rem] text-ardoise">{t.level}</dt>
+                      <dd class="font-medium">{f.level[lang]}</dd>
+                    </div>
+                  )
+                }
+              </dl>
+
+              {f.description && <p class="mt-5 max-w-[64ch] leading-[1.6]">{f.description[lang]}</p>}
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

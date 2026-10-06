@@ -1,0 +1,72 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import { site } from '../data/site';
+import { paths } from '../i18n';
+
+// GitHub Pages sert ce fichier pour toute adresse inconnue, quelle que soit la langue :
+// la page porte les deux versions et affiche celle qui correspond à l'adresse demandée.
+const copy = {
+  fr: {
+    title: 'Hors-jeu',
+    text: "Erreur 404 : cette page n'existe pas, ou elle a changé d'adresse.",
+    home: "Retour à l'accueil",
+    demo: 'Voir la démo live',
+  },
+  en: {
+    title: 'Offside',
+    text: 'Error 404: this page does not exist, or it has moved.',
+    home: 'Back to home',
+    demo: 'See the live demo',
+  },
+} as const;
+---
+
+<Base lang="fr" title="404 — Hors-jeu · Matthieu Le Gall" description="Page introuvable.">
+  <Nav lang="fr" />
+  <main id="contenu" class="@container flex min-h-svh flex-col justify-center bg-pelouse pb-16 pt-28">
+    <div class="gutter">
+      <!-- La ligne de hors-jeu : le dernier défenseur, et l'attaquant parti trop tôt. -->
+      <svg viewBox="0 0 640 150" class="block w-full max-w-[44rem]" fill="none" aria-hidden="true">
+        <g stroke="var(--color-craie)" stroke-opacity="0.26" stroke-width="1">
+          <line x1="0" y1="149.5" x2="640" y2="149.5" vector-effect="non-scaling-stroke"></line>
+          <line x1="0" y1="0.5" x2="640" y2="0.5" vector-effect="non-scaling-stroke"></line>
+          <path d="M640 26 H520 V124 H640" vector-effect="non-scaling-stroke"></path>
+          <path d="M640 52 H592 V98 H640" vector-effect="non-scaling-stroke"></path>
+        </g>
+        <line x1="396" y1="0" x2="396" y2="150" stroke="var(--color-ballon)" stroke-width="1.5" stroke-dasharray="6 6" vector-effect="non-scaling-stroke"></line>
+        <g stroke="var(--color-craie)" stroke-width="1.5" fill="var(--color-pelouse)">
+          <circle cx="396" cy="44" r="9" vector-effect="non-scaling-stroke"></circle>
+          <circle cx="352" cy="96" r="9" vector-effect="non-scaling-stroke"></circle>
+          <circle cx="318" cy="30" r="9" vector-effect="non-scaling-stroke"></circle>
+          <circle cx="612" cy="75" r="9" vector-effect="non-scaling-stroke"></circle>
+        </g>
+        <line x1="210" y1="104" x2="440" y2="84" stroke="var(--color-craie)" stroke-opacity="0.7" stroke-width="1.5" vector-effect="non-scaling-stroke"></line>
+        <circle cx="200" cy="105" r="9" fill="var(--color-craie)"></circle>
+        <circle cx="458" cy="82" r="10" fill="var(--color-ballon)"></circle>
+      </svg>
+
+      {
+        (['fr', 'en'] as const).map((l) => (
+          <div data-l={l} lang={l} hidden={l === 'en'} class="mt-12">
+            <h1 class="display display-name">{copy[l].title}</h1>
+            <p class="mt-7 max-w-[46ch] text-[1.1875rem] leading-[1.5] text-brume">{copy[l].text}</p>
+            <div class="mt-9 flex flex-wrap gap-3">
+              <a class="btn btn-ballon" href={paths.home[l]}>{copy[l].home}</a>
+              {site.demo && <a class="btn btn-ligne" href={paths.demo[l]}>{copy[l].demo}</a>}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </main>
+</Base>
+
+<script>
+  if (window.location.pathname.startsWith('/en')) {
+    document.documentElement.lang = 'en';
+    document.querySelectorAll<HTMLElement>('[data-l]').forEach((el) => {
+      el.hidden = el.dataset.l !== 'en';
+    });
+  }
+</script>

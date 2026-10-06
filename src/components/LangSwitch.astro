@@ -1,0 +1,27 @@
+---
+import { otherLang, ui, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+  /** Adresse de la même page dans l'autre langue. */
+  to: string;
+}
+const { lang, to } = Astro.props;
+const other = otherLang(lang);
+---
+
+<!-- Interrupteur FR / EN : un lien vers la même page (et la même section) dans l'autre langue. -->
+<a
+  class="lang-switch"
+  href={to}
+  data-lang-switch
+  data-lang={lang}
+  data-base={to}
+  data-goatcounter-click={`langue-${other}`}
+  hreflang={other}
+  aria-label={ui[lang].switchLang}
+>
+  <span class="lang-opt" data-on={lang === 'fr' ? '' : undefined} aria-hidden="true">FR</span>
+  <span class="lang-track" aria-hidden="true"><span class="lang-thumb"></span></span>
+  <span class="lang-opt" data-on={lang === 'en' ? '' : undefined} aria-hidden="true">EN</span>
+</a>

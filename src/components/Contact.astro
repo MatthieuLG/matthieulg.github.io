@@ -1,0 +1,73 @@
+---
+import { Car, Download, Mail, MapPin, UserRound } from 'lucide-react';
+import { profile } from '../data/profile';
+import { ui, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = ui[lang];
+
+const facts = [
+  { icon: Mail, label: t.email, value: profile.email, href: `mailto:${profile.email}` },
+  { icon: UserRound, label: 'LinkedIn', value: profile.linkedinLabel, href: profile.linkedin },
+  { icon: MapPin, label: t.location, value: profile.location[lang] },
+  { icon: Car, label: t.licence, value: profile.licence[lang] },
+];
+---
+
+<section id="contact" class="anchor @container relative overflow-hidden bg-pelouse pb-24 pt-24 lg:pb-32 lg:pt-36">
+  <!-- Le rond central : l'engagement -->
+  <svg
+    class="pointer-events-none absolute left-1/2 top-0 h-full w-[max(100%,70rem)] -translate-x-1/2"
+    viewBox="0 0 1200 700"
+    preserveAspectRatio="xMidYMid slice"
+    fill="none"
+    aria-hidden="true"
+  >
+    <g stroke="var(--color-craie)" stroke-opacity="0.16" stroke-width="1">
+      <line x1="0" y1="0.5" x2="1200" y2="0.5" vector-effect="non-scaling-stroke"></line>
+      <circle cx="1010" cy="0" r="250" vector-effect="non-scaling-stroke"></circle>
+    </g>
+    <circle cx="1010" cy="0" r="6" fill="var(--color-craie)" fill-opacity="0.3"></circle>
+  </svg>
+
+  <div class="gutter relative">
+    <h2 class="display display-contact max-w-[12ch]">{profile.contact.title[lang]}</h2>
+    <p class="mt-7 max-w-[46ch] text-[1.1875rem] leading-[1.5] text-brume">{profile.contact.text[lang]}</p>
+
+    <div class="mt-9 flex flex-wrap gap-3">
+      <a class="btn btn-ballon" href={`mailto:${profile.email}`} data-goatcounter-click="email">
+        <Mail size={18} strokeWidth={2.2} aria-hidden="true" />
+        {t.sendEmail}
+      </a>
+      <a class="btn btn-ligne" href={profile.cv[lang]} target="_blank" rel="noopener" data-goatcounter-click="cv">
+        <Download size={18} strokeWidth={2} aria-hidden="true" />
+        {t.downloadCv}
+      </a>
+    </div>
+
+    <dl class="mt-16 grid gap-x-10 gap-y-8 border-t border-craie/20 pt-9 sm:grid-cols-2 lg:mt-20 lg:grid-cols-4">
+      {
+        facts.map((fact) => (
+          <div>
+            <dt class="flex items-center gap-2 text-[0.875rem] text-brume">
+              <fact.icon size={15} strokeWidth={2} aria-hidden="true" />
+              {fact.label}
+            </dt>
+            <dd class="mt-1.5 text-[1.0625rem] font-semibold [overflow-wrap:anywhere]">
+              {fact.href ? (
+                <a class="link" href={fact.href} target={fact.href.startsWith('http') ? '_blank' : undefined} rel="noopener">
+                  {fact.value}
+                </a>
+              ) : (
+                fact.value
+              )}
+            </dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+</section>
