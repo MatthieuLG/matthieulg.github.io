@@ -62,20 +62,6 @@ automatiquement sur la ligne de son année de début (un diplôme, sur celle de 
 l'axe va jusqu'à l'année du dernier build) ; `pitch.x` règle sa position en largeur.
 Ajouter un projet, un article ou une référence : une entrée dans le fichier de données correspondant.
 
-## Démo live (désactivée)
-
-La démo n'est pas publiée pour le moment. Pour la réactiver : passer `demo` à `true` dans
-`src/data/site.ts`, puis renommer `src/pages/_demo.astro` et `src/pages/en/_demo.astro` en `demo.astro`.
-Le lien de navigation et le renvoi depuis Projets réapparaissent alors d'eux-mêmes.
-
-Une fois active, `/demo/` lit les données ouvertes StatsBomb directement dans le navigateur
-(`raw.githubusercontent.com/statsbomb/open-data`), sans clé ni serveur : liste des matchs,
-événements et compositions, puis calcul des tirs, des xG cumulés et des plus grosses occasions.
-Les compétitions proposées se règlent dans `src/lib/statsbomb.ts`.
-
-Conditions d'utilisation StatsBomb : citer la source (fait en bas de page) et afficher leur logo,
-à récupérer dans leur Media Pack (https://statsbomb.com/media-pack/).
-
 ## Mesure d'audience (sans cookies)
 
 1. Créer un compte gratuit sur https://www.goatcounter.com et choisir un code (ex. `matthieulg`).
